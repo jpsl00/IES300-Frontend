@@ -32,25 +32,70 @@
             Serviços
           </a>
           <div class="navbar-dropdown is-boxed">
-            <router-link class="navbar-item" to="/serviços/agendamento">
+            <router-link
+              class="navbar-item"
+              :to="
+                isLoggedIn
+                  ? '/serviços/realizar-agendamento'
+                  : '/serviços/agendamento'
+              "
+            >
               Agendamento
+            </router-link>
+            <hr class="navbar-divider" v-show="isLoggedIn" />
+            <router-link
+              class="navbar-item"
+              v-show="isLoggedIn"
+              to="/serviços/meus-agendamentos"
+            >
+              Meus Agendamentos
+            </router-link>
+            <router-link
+              class="navbar-item"
+              v-show="isLoggedIn && isPartner"
+              to="/gerência/parceiro/consultas"
+            >
+              Gerenciar Consultas
+            </router-link>
+            <router-link
+              class="navbar-item"
+              v-show="isLoggedIn && isEmployee"
+              to="/gerência/funcionário/agendamentos"
+            >
+              Gerenciar Agendamentos
             </router-link>
           </div>
         </div>
+
         <a class="navbar-item">
           Blog
         </a>
       </div>
 
-      <div class="navbar-end">
+      <div class="navbar-end" v-show="!isLoggedIn">
         <div class="navbar-item">
           <div class="field is-grouped">
             <p class="control">
-              <a class="button is-primary">
+              <router-link class="button is-primary" to="/login">
                 <span class="icon">
                   <i class="fas fa-sign-in-alt"></i>
                 </span>
                 <span>Entrar</span>
+              </router-link>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="navbar-end" v-show="isLoggedIn">
+        <div class="navbar-item"></div>
+        <div class="navbar-item">
+          <div class="field is-grouped">
+            <p class="control">
+              <a class="button is-danger" @click="logout">
+                <span class="icon">
+                  <i class="fas fa-sign-out-alt"></i>
+                </span>
+                <span>Sair</span>
               </a>
             </p>
           </div>
@@ -62,7 +107,33 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import { EPermissionLevel } from "../util";
 
-@Component({})
+@Component({
+  computed: {
+    user() {
+      return this.$store.state.authentication.user;
+    },
+    isPartner() {
+      return (
+        this.$store.state.authentication.user?.role >= EPermissionLevel.Partner
+      );
+    },
+    isEmployee() {
+      return (
+        this.$store.state.authentication.user?.role >= EPermissionLevel.Employee
+      );
+    },
+    isLoggedIn() {
+      return this.$store.state.authentication.status?.loggedIn || false;
+    },
+  },
+  methods: {
+    logout() {
+      this.$store.dispatch("authentication/logout");
+      location.reload();
+    },
+  },
+})
 export default class Navbar extends Vue {}
 </script>

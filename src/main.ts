@@ -4,10 +4,16 @@ import "./registerServiceWorker";
 import router from "./router";
 import store from "./store";
 
-import { faSignInAlt, faHeart } from "@fortawesome/free-solid-svg-icons";
+import {
+  faSignInAlt,
+  faHeart,
+  faUser,
+  faKey,
+  faSignOutAlt,
+} from "@fortawesome/free-solid-svg-icons";
 import { library, dom } from "@fortawesome/fontawesome-svg-core";
 
-library.add(faSignInAlt, faHeart);
+library.add(faSignInAlt, faHeart, faUser, faKey, faSignOutAlt);
 
 dom.watch();
 
