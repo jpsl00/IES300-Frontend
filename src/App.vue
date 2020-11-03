@@ -1,15 +1,28 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
+    <Navbar />
+    <router-view />
+    <Footer />
   </div>
 </template>
 
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
+
+import Navbar from "@/components/Navbar.vue";
+import Footer from "@/components/Footer.vue";
+
+@Component({
+  components: {
+    Navbar,
+    Footer,
+  },
+})
+export default class App extends Vue {}
+</script>
+
 <style lang="scss">
-#app {
+/* #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -28,5 +41,5 @@
       color: #42b983;
     }
   }
-}
+} */
 </style>
