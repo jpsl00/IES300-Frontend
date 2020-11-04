@@ -11,7 +11,7 @@ const initialState = localUser
     }
   : { status: { loggedIn: false, loggingIn: false }, user: null };
 
-export const auth: Module<any, any> = {
+export const authentication: Module<any, any> = {
   namespaced: true,
   state: initialState,
   actions: {
