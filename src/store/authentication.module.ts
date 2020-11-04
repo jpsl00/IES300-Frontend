@@ -1,17 +1,24 @@
 import { userService } from "../services";
 import { router } from "../router";
+import Vuex from "vuex";
 
 const localUser = localStorage.getItem("user") || false;
 //const initialState = { status: {}, user: null };
 const initialState = localUser
-  ? { status: { loggedIn: true }, user: JSON.parse(localUser) }
-  : { status: {}, user: null };
+  ? {
+      status: { loggedIn: true, loggingIn: false },
+      user: JSON.parse(localUser),
+    }
+  : { status: { loggedIn: false, loggingIn: false }, user: null };
 
-export const authentication = {
-  namespaced: true,
+export default new Vuex.Store({
+  //namespaced: true,
   state: initialState,
   actions: {
-    login({ dispatch, commit }, { username, password }) {
+    login(
+      { dispatch, commit },
+      { username, password }: Record<string, string>
+    ) {
       commit("loginRequest", { username });
 
       userService.login(username, password).then(
@@ -21,7 +28,6 @@ export const authentication = {
         },
         (error) => {
           commit("loginFailure", error);
-          dispatch("alert/error", error, { root: true });
         }
       );
     },
@@ -32,20 +38,20 @@ export const authentication = {
   },
   mutations: {
     loginRequest(state, user) {
-      state.status = { loggingIn: true };
+      state.status = { loggingIn: true, loggedIn: false };
       state.user = user;
     },
     loginSuccess(state, user) {
-      state.status = { loggedIn: true };
+      state.status = { loggedIn: true, loggingIn: false };
       state.user = user;
     },
     loginFailure(state) {
-      state.status = {};
+      state.status = { loggedIn: false, loggingIn: false };
       state.user = null;
     },
     logout(state) {
-      state.status = {};
+      state.status = { loggedIn: false, loggingIn: false };
       state.user = null;
     },
   },
-};
+});

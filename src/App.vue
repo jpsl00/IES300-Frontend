@@ -17,11 +17,6 @@ import Footer from "@/components/Footer.vue";
     Navbar,
     Footer,
   },
-  watch: {
-    $route() {
-      this.$store.dispatch("alert/clear");
-    },
-  },
 })
 export default class App extends Vue {}
 </script>

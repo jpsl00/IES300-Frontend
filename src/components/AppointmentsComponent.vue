@@ -50,12 +50,7 @@ import axios from "axios";
 import config from "../config";
 
 @Component({
-  props: {
-    record: {},
-    index: null,
-    renderClient: false,
-    renderPartner: false,
-  },
+  props: ["record", "index", "renderClient", "renderPartner"],
 })
 export default class AppointmentsComponent extends Vue {
   deleteRecord() {

@@ -113,8 +113,9 @@ import { Component, Vue } from "vue-property-decorator";
   }, */
   methods: {
     handleSubmit(e) {
-      this.submitted = true;
-      const { username, password } = this;
+      this.$data.submitted = true;
+      const username = this.$data.username;
+      const password = this.$data.password;
       const { dispatch } = this.$store;
       if (username && password) {
         dispatch("authentication/login", { username, password });
