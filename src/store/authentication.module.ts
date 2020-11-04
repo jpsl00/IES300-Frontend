@@ -1,6 +1,6 @@
 import { userService } from "../services";
 import { router } from "../router";
-import Vuex from "vuex";
+import { Module } from "vuex";
 
 const localUser = localStorage.getItem("user") || false;
 //const initialState = { status: {}, user: null };
@@ -11,8 +11,8 @@ const initialState = localUser
     }
   : { status: { loggedIn: false, loggingIn: false }, user: null };
 
-export default new Vuex.Store({
-  //namespaced: true,
+export const auth: Module<any, any> = {
+  namespaced: true,
   state: initialState,
   actions: {
     login(
@@ -54,4 +54,4 @@ export default new Vuex.Store({
       state.user = null;
     },
   },
-});
+};

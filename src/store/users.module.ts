@@ -1,8 +1,8 @@
 import { userService } from "../services";
-import Vuex from "vuex";
+import { Module } from "vuex";
 
-export default new Vuex.Store({
-  //namespaced: true,
+export const users: Module<any, any> = {
+  namespaced: true,
   state: {
     all: {},
   },
@@ -17,4 +17,4 @@ export default new Vuex.Store({
       state.all = { error };
     },
   },
-});
+};
