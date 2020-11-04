@@ -62,4 +62,7 @@ export default class Footer extends Vue {}
 .red {
   color: red;
 }
+.footer {
+  padding-bottom: 3rem;
+}
 </style>

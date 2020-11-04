@@ -1,3 +1,4 @@
+import config from "@/config";
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import Home from "../views/Home.vue";
@@ -36,7 +37,7 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const publicPages = ["/", "/about", "/serviços/agendamento", "/login"];
+  const publicPages = ["/", "/login"];
   const authRequired = !publicPages.includes(to.path);
   const loggedIn = !!localStorage.getItem("user");
 

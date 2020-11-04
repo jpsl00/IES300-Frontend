@@ -19,7 +19,7 @@
       </div>
     </div>
 
-    <div id="navbarExampleTransparentExample" class="navbar-menu">
+    <div class="navbar-menu">
       <div class="navbar-start">
         <router-link class="navbar-item" to="/">
           Home
@@ -32,27 +32,13 @@
             Serviços
           </a>
           <div class="navbar-dropdown is-boxed">
-            <router-link
-              class="navbar-item"
-              :to="
-                isLoggedIn
-                  ? '/serviços/realizar-agendamento'
-                  : '/serviços/agendamento'
-              "
-            >
+            <router-link class="navbar-item" to="/serviços/agendamento">
               Agendamento
             </router-link>
-            <hr class="navbar-divider" v-show="isLoggedIn" />
+            <hr class="navbar-divider" v-show="isLoggedIn && isPartner" />
             <router-link
               class="navbar-item"
-              v-show="isLoggedIn"
-              to="/serviços/meus-agendamentos"
-            >
-              Meus Agendamentos
-            </router-link>
-            <router-link
-              class="navbar-item"
-              v-show="isLoggedIn && isPartner"
+              v-show="isLoggedIn && isPartner && !isEmployee"
               to="/gerência/parceiro/consultas"
             >
               Gerenciar Consultas
@@ -87,7 +73,9 @@
         </div>
       </div>
       <div class="navbar-end" v-show="isLoggedIn">
-        <div class="navbar-item"></div>
+        <div class="navbar-item">
+          Bem-vindo, <strong>{{ user.name }}</strong>
+        </div>
         <div class="navbar-item">
           <div class="field is-grouped">
             <p class="control">
@@ -112,7 +100,7 @@ import { EPermissionLevel } from "../util";
 @Component({
   computed: {
     user() {
-      return this.$store.state.authentication.user;
+      return this.$store.state.authentication.user || {};
     },
     isPartner() {
       return (
@@ -137,3 +125,9 @@ import { EPermissionLevel } from "../util";
 })
 export default class Navbar extends Vue {}
 </script>
+
+<style scoped>
+strong {
+  padding-left: 5px;
+}
+</style>

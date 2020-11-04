@@ -10,10 +10,12 @@ import {
   faUser,
   faKey,
   faSignOutAlt,
+  faPlus,
+  faBan,
 } from "@fortawesome/free-solid-svg-icons";
 import { library, dom } from "@fortawesome/fontawesome-svg-core";
 
-library.add(faSignInAlt, faHeart, faUser, faKey, faSignOutAlt);
+library.add(faSignInAlt, faHeart, faUser, faKey, faSignOutAlt, faPlus, faBan);
 
 dom.watch();
 

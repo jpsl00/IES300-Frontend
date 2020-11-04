@@ -3,7 +3,25 @@
     <section class="hero is-fullheight is-bold is-primary">
       <div class="hero-body">
         <div class="container">
-          a
+          <div class="columns">
+            <div class="column is-6-desktop is-12-mobile">
+              <div class="card">
+                <div class="card-header">
+                  <h4 class="card-header-title title is-4">
+                    Ayurveda e Bem-Estar
+                  </h4>
+                </div>
+                <div class="card-content">
+                  “Para conhecer suas experiências passadas, basta examinar seu
+                  corpo hoje. Para saber como será seu corpo no futuro, basta
+                  examinar suas experiências hoje.”
+                </div>
+                <div class="card-footer">
+                  <p class="card-footer-item">Antigo Ditado Indiano</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -25,3 +43,9 @@ import HelloWorld from "@/components/HelloWorld.vue"; // @ is an alias to /src
 })
 export default class Home extends Vue {}
 </script>
+
+<style scoped>
+.card-header-title {
+  color: #363636 !important;
+}
+</style>
