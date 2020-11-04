@@ -2,10 +2,10 @@ import { userService } from "../services";
 import { router } from "../router";
 
 const localUser = localStorage.getItem("user") || false;
-const initialState = { status: {}, user: null };
-/* const initialState = localUser
+//const initialState = { status: {}, user: null };
+const initialState = localUser
   ? { status: { loggedIn: true }, user: JSON.parse(localUser) }
-  : { status: {}, user: null }; */
+  : { status: {}, user: null };
 
 export const authentication = {
   namespaced: true,

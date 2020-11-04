@@ -5,6 +5,31 @@
         <div class="container">
           <div class="columns is-centered">
             <div class="column is-12-mobile is-6-desktop">
+              <div class="box">
+                <div class="content">
+                  <p class="subtitle is-6">Logins para teste:</p>
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Usuário</th>
+                        <th>Senha</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>cliente1</td>
+                        <td>123456</td>
+                      </tr>
+                      <tr>
+                        <td>cliente2</td>
+                        <td>123456</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="column is-12-mobile is-6-desktop">
               <form @submit.prevent="handleSubmit" class="box">
                 <div class="field">
                   <label class="label">Nome de Usuário</label>
