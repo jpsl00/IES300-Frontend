@@ -1,3 +1,3 @@
 export default {
-  apiUrl: process.env.APIURL || "http://localhost:7000",
+  apiUrl: process.env.APIURL || "https://ies300-backend.herokuapp.com/",
 };
