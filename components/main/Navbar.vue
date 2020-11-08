@@ -15,7 +15,7 @@
           Home
         </b-navbar-item>
         <b-navbar-item href="#"> Cursos </b-navbar-item>
-        <b-navbar-dropdown label="Serviços" hoverable>
+        <b-navbar-dropdown label="Serviços" hoverable boxed>
           <b-navbar-item
             tag="router-link"
             :to="{ path: '/serviços/agendamento' }"

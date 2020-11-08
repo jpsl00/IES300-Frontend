@@ -15,8 +15,15 @@
   </ValidationProvider>
 </template>
 
-<script>
-import { Component, Vue } from 'nuxt-property-decorator'
+<script lang="ts">
+import {
+  Component,
+  Prop,
+  PropSync,
+  Vue,
+  Watch,
+  Emit,
+} from 'nuxt-property-decorator'
 import { ValidationProvider } from 'vee-validate'
 
 @Component({
@@ -24,22 +31,7 @@ import { ValidationProvider } from 'vee-validate'
     ValidationProvider,
   },
 })
-  props: {
-    vid: {
-      type: String,
-    },
-    rules: {
-      type: [Object, String],
-      default: '',
-    },
-    // must be included in props
-    value: {
-      type: null,
-    },
-  },
-  data: () => ({
-    innerValue: '',
-  }),
+/*
   watch: {
     // Handles internal model changes.
     innerValue(newVal) {
@@ -55,5 +47,16 @@ import { ValidationProvider } from 'vee-validate'
       this.innerValue = this.value
     }
   },
+} */
+export default class InputWithValidation extends Vue {
+  @Prop(String) readonly vid: String | undefined
+  @Prop([Object, String]) readonly rules!: [Object, String]
+  @PropSync('innerValue', { type: String }) readonly value!: String
+
+  @Watch('innerValue')
+  @Emit()
+  onInnerValueChanged(val: string) {
+    return val
+  }
 }
 </script>
