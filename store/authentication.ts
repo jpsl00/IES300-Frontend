@@ -28,7 +28,6 @@ export default class Authorization extends VuexModule {
       $axios.defaults.headers.common.authorization = token
       this.context.commit('authSuccess', token, user)
     } catch (err) {
-      console.log(err)
       this.context.commit('authError')
     }
   }
