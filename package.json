@@ -1,5 +1,5 @@
 {
-  "name": "IES300-Frontend",
+  "name": "ies300-frontend",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -11,12 +11,17 @@
     "lint": "yarn lint:js"
   },
   "dependencies": {
+    "@fortawesome/free-solid-svg-icons": "^5.15.1",
     "@nuxt/typescript-runtime": "^2.0.0",
     "@nuxtjs/axios": "^5.12.2",
+    "@nuxtjs/fontawesome": "^1.1.2",
     "@nuxtjs/pwa": "^3.0.2",
     "core-js": "^3.6.5",
+    "node-sass": "^5.0.0",
     "nuxt": "^2.14.6",
-    "nuxt-buefy": "^0.4.3"
+    "nuxt-buefy": "^0.4.3",
+    "nuxt-property-decorator": "^2.8.8",
+    "sass-loader": "^10.0.5"
   },
   "devDependencies": {
     "@nuxt/types": "^2.14.6",
