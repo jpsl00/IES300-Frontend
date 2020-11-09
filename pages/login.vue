@@ -3,7 +3,8 @@
     <section class="hero is-medium">
       <div class="hero-body">
         <div class="container">
-          <div class="columns is-centered">
+          <div class="columns is-centered is-multiline">
+            <!-- Tabela de usuários -->
             <div class="column is-12-mobile is-6-desktop">
               <div class="box">
                 <div class="content">
@@ -29,61 +30,52 @@
                 </div>
               </div>
             </div>
+            <!-- Novo Formulário de login -->
             <div class="column is-12-mobile is-6-desktop">
-              <form class="box" @submit.prevent="handleSubmit">
-                <b-field label="Nome de Usuário"> </b-field>
-                <div class="field">
-                  <label class="label">Nome de Usuário</label>
-                  <div class="control has-icons-left">
-                    <input
-                      v-model="username"
-                      class="input"
-                      type="text"
-                      name="username"
-                      placeholder="Nome de Usuário"
-                      :class="{
-                        'is-danger': !username,
-                        'is-loading': isLoggingIn,
-                      }"
-                      :disabled="isLoggingIn"
-                    />
-                    <span class="icon is-small is-left">
-                      <i class="fas fa-user"></i>
-                    </span>
-                  </div>
-                </div>
-                <div class="field">
-                  <label class="label">Senha</label>
-                  <div class="control has-icons-left">
-                    <input
-                      v-model="password"
-                      class="input"
-                      type="password"
-                      name="password"
-                      placeholder="Senha"
-                      :class="{
-                        'is-danger': !password,
-                        'is-loading': isLoggingIn,
-                      }"
-                      :disabled="isLoggingIn"
-                    />
-                    <span class="icon is-small is-left">
-                      <i class="fas fa-key"></i>
-                    </span>
-                  </div>
-                </div>
-                <div class="field is-grouped">
-                  <div class="control">
-                    <button
-                      class="button is-link"
-                      :class="{ 'is-loading': isLoggingIn }"
-                      :disabled="isLoggingIn"
+              <ValidationObserver ref="observer" v-slot="{ handleSubmit }">
+                <!-- <section class="section">
+                  <InputWithValidationComponent
+                    v-model="username"
+                    rules="required"
+                    type="text"
+                    label="Nome de Usuário"
+                    vid="username"
+                  />
+                </section> -->
+                <section class="box">
+                  <InputWithValidation
+                    v-model="username"
+                    rules="required|min:4|max:32"
+                    type="text"
+                    label="Nome de Usuário"
+                    vid="username"
+                    icon="user"
+                    :loading="isSubmitted"
+                    :disabled="isSubmitted"
+                  />
+                  <InputWithValidation
+                    v-model="password"
+                    rules="required|min:6|max:128"
+                    type="password"
+                    label="Senha"
+                    vid="password"
+                    icon="key"
+                    :loading="isSubmitted"
+                    :disabled="isSubmitted"
+                  />
+
+                  <div class="buttons">
+                    <b-button
+                      type="is-primary"
+                      icon-left="sign-in-alt"
+                      :loading="isSubmitted"
+                      @click="handleSubmit(onSubmit)"
                     >
                       Entrar
-                    </button>
+                    </b-button>
                   </div>
-                </div>
-              </form>
+                </section>
+              </ValidationObserver>
             </div>
           </div>
         </div>
@@ -93,24 +85,64 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'nuxt-property-decorator'
-import { authenticationStore } from '~/store'
+import { Component, Vue, namespace, Watch } from 'nuxt-property-decorator'
+import { ValidationObserver, ValidationProvider } from 'vee-validate'
+import InputWithValidationComponent from '@/components/inputs/InputWithValidation.vue'
 
-@Component
+const authentication = namespace('authentication')
+
+@Component({
+  components: {
+    ValidationObserver,
+    ValidationProvider,
+    InputWithValidationComponent,
+  },
+})
 export default class Login extends Vue {
+  [x: string]: any
   private username = ''
   private password = ''
+  private isSubmitted = false
+
+  @authentication.Getter
+  private authStatus!: string
 
   get isLoggingIn() {
-    return authenticationStore.status === 'loading'
+    // return authenticationStore.status === 'loading'
+    return this.authStatus === 'loading'
   }
 
-  handleSubmit() {
-    if (this.username && this.password)
+  onSubmit() {
+    if (this.username && this.password) {
+      this.isSubmitted = true
       this.$store.dispatch('authentication/login', {
         username: this.username,
         password: this.password,
       })
+    }
+  }
+
+  @Watch('authStatus')
+  onAuthStatusChanged(status: string) {
+    if (status === 'error') {
+      this.$buefy.toast.open({
+        duration: 3000,
+        message: 'Usuário/Senha incorretos',
+        type: 'is-danger',
+        position: 'is-bottom-right',
+        queue: false,
+      })
+      this.isSubmitted = false
+    } else if (status === 'success') {
+      this.$buefy.toast.open({
+        duration: 3000,
+        message: 'Logado com sucesso, redirecionando em 3 segundos...',
+        type: 'is-success',
+        position: 'is-bottom-right',
+        queue: false,
+      })
+      setTimeout(() => this.$router.push('/'), 4000)
+    }
   }
 }
 </script>

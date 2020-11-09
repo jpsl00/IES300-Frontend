@@ -29,6 +29,7 @@ export default {
   plugins: [
     { src: '@/plugins/axios-accessor' },
     { src: '@/plugins/vuex-persist', mode: 'client' },
+    { src: '@/plugins/vee-validate', mode: 'client' },
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
@@ -59,7 +60,9 @@ export default {
   },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
-  build: {},
+  build: {
+    transpile: ['vee-validate/dist/rules'],
+  },
 
   // Buefy Configuration
   buefy: {

@@ -10,7 +10,7 @@
       :type="{ 'is-danger': errors[0], 'is-success': valid }"
       :message="errors"
     >
-      <b-input v-model="innerValue" v-bind="$attrs"></b-input>
+      <b-input v-model="innerValue" v-bind.sync="$attrs"></b-input>
     </b-field>
   </ValidationProvider>
 </template>
@@ -18,11 +18,11 @@
 <script lang="ts">
 import {
   Component,
+  Emit,
   Prop,
-  PropSync,
+  /*   PropSync, */
   Vue,
   Watch,
-  Emit,
 } from 'nuxt-property-decorator'
 import { ValidationProvider } from 'vee-validate'
 
@@ -31,32 +31,31 @@ import { ValidationProvider } from 'vee-validate'
     ValidationProvider,
   },
 })
-/*
-  watch: {
-    // Handles internal model changes.
-    innerValue(newVal) {
-      this.$emit('input', newVal)
-    },
-    // Handles external model changes.
-    value(newVal) {
-      this.innerValue = newVal
-    },
-  },
-  created() {
-    if (this.value) {
-      this.innerValue = this.value
-    }
-  },
-} */
 export default class InputWithValidation extends Vue {
-  @Prop(String) readonly vid: String | undefined
-  @Prop([Object, String]) readonly rules!: [Object, String]
-  @PropSync('innerValue', { type: String }) readonly value!: String
+  innerValue = ''
 
+  @Prop(String) readonly vid: string | undefined
+
+  @Prop({ type: [Object, String], default: '' }) readonly rules!:
+    | Object
+    | string
+
+  @Prop(String) readonly value!: string
+
+  /* @PropSync('innerValue', { type: String }) readonly value!: String */
   @Watch('innerValue')
-  @Emit()
+  @Emit('input')
   onInnerValueChanged(val: string) {
     return val
+  }
+
+  @Watch('value')
+  onValueChanged(val: string) {
+    this.innerValue = val
+  }
+
+  created() {
+    if (this.value) this.innerValue = this.value
   }
 }
 </script>

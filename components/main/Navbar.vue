@@ -7,6 +7,7 @@
             :src="require('@/assets/bioveda-logo.png')"
             alt="Bioveda"
             width="112"
+            height="28"
           />
         </b-navbar-item>
       </template>
@@ -25,7 +26,7 @@
         </b-navbar-dropdown>
         <b-navbar-item href="#"> Contato </b-navbar-item>
       </template>
-      <template slot="end">
+      <template v-show="shouldShow" slot="end">
         <b-navbar-item>
           <b-button
             type="is-primary"
@@ -53,7 +54,11 @@ import { Component, Vue } from 'nuxt-property-decorator'
     },
   },
 })
-export default class Navbar extends Vue {}
+export default class Navbar extends Vue {
+  get shouldShow() {
+    return this.$route.path !== '/login'
+  }
+}
 </script>
 
 <style scoped>
