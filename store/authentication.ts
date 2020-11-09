@@ -4,7 +4,9 @@ import {
   VuexMutation,
   VuexAction,
 } from 'nuxt-property-decorator'
+import { IAuthenticationLoginUser } from '~/typings/store/authentication'
 import { $axios } from '~/utils/api'
+import * as b64 from '~/utils/b64-helper'
 
 @Module({
   name: 'authentication',
@@ -19,10 +21,17 @@ export default class Authorization extends VuexModule {
 
   // Actions
   @VuexAction
-  async login(data: Object) {
+  async login(data: IAuthenticationLoginUser) {
     this.context.commit('authRequest')
     try {
-      const resp = await $axios.$post('/auth/login', data)
+      const encodedData = b64.encodeB64(
+        JSON.stringify({
+          username: b64.encodeB64(data.username),
+          password: b64.encodeB64(data.password),
+        })
+      )
+      console.log(encodedData)
+      const resp = await $axios.$post('/auth/login', { data: encodedData })
       const { token, user } = resp
 
       $axios.defaults.headers.common.authorization = token

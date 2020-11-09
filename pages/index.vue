@@ -44,7 +44,7 @@ export default class Home extends Vue {}
 }
 
 .hero {
-  background: url('~assets/bioveda-centro-de-saude-integrativa-ayurveda.jpg')
+  background: url('~assets/bioveda-centro-de-saude-integrativa-ayurveda.webp')
     center center !important;
   background-size: cover !important;
 }

@@ -8,7 +8,28 @@ export default {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' },
+      {
+        name: 'title',
+        content: 'Bioveda',
+      },
+      {
+        hid: 'description',
+        name: 'description',
+        content: 'Bioveda: Ayurveda e Bem-Estar',
+      },
+
+      {
+        name: 'og:title',
+        content: 'Bioveda',
+      },
+      {
+        name: 'og:description',
+        content: 'Bioveda: Ayurveda e Bem-Estar',
+      },
+      {
+        name: 'og:image',
+        content: '~/assets/bioveda-logo.png',
+      },
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
@@ -42,6 +63,8 @@ export default {
 
     // Font Awesome
     '@nuxtjs/fontawesome',
+
+    'nuxt-compress',
   ],
 
   // Modules (https://go.nuxtjs.dev/config-modules)
@@ -62,6 +85,9 @@ export default {
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
     transpile: ['vee-validate/dist/rules'],
+    exxtend(config, { isClient }) {
+      if (isClient) config.optimization.splitChunks.maxSize = 200000
+    },
   },
 
   // Buefy Configuration
@@ -75,6 +101,16 @@ export default {
   fontawesome: {
     icons: {
       solid: true,
+    },
+  },
+
+  // Nuxt-Compress Config
+  'nuxt-compress': {
+    gzip: {
+      cache: true,
+    },
+    brotli: {
+      threshold: 10240,
     },
   },
 }
