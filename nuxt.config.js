@@ -4,7 +4,7 @@ export default {
 
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
-    title: 'IES300-Frontend',
+    title: 'Bioveda: Ayurveda e Bem-Estar',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -110,7 +110,7 @@ export default {
       cache: true,
     },
     brotli: {
-      threshold: 10240,
+      threshold: 1024,
     },
   },
 }
