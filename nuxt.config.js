@@ -65,6 +65,8 @@ export default {
     '@nuxtjs/fontawesome',
 
     'nuxt-compress',
+
+    '@nuxtjs/composition-api',
   ],
 
   // Modules (https://go.nuxtjs.dev/config-modules)
@@ -112,5 +114,11 @@ export default {
     brotli: {
       threshold: 1024,
     },
+  },
+
+  // ! Workaround for nuxt-compose issue
+  // * https://github.com/nuxt-community/composition-api/issues/44
+  generate: {
+    interval: 2000,
   },
 }
