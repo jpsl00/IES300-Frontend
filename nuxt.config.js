@@ -120,7 +120,7 @@ export default {
 
   // ! Workaround for nuxt-compose issue
   // * https://github.com/nuxt-community/composition-api/issues/44
-  generate: {
+  /* generate: {
     interval: 2000,
-  },
+  }, */
 }
