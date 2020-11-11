@@ -1,0 +1,7 @@
+[build]
+  command = "yarn run generate"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
