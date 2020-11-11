@@ -81,7 +81,8 @@ export default {
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
-    baseURL: 'https://ies300-backend.herokuapp.com/',
+    baseURL:
+      'http://localhost:7000' /* 'https://ies300-backend.herokuapp.com/', */,
   },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
@@ -116,6 +117,12 @@ export default {
     brotli: {
       threshold: 1024,
     },
+  },
+
+  loadingIndicator: {
+    name: 'circle',
+    color: '#532F9B',
+    background: 'white',
   },
 
   // ! Workaround for nuxt-compose issue

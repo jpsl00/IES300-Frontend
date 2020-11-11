@@ -1,4 +1,4 @@
-<template class="has-navbar-fixed-top">
+<template>
   <div>
     <NavbarComponent />
     <nuxt />

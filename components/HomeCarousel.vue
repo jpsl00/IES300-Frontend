@@ -32,7 +32,6 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'nuxt-property-decorator'
-import { ICarouselData } from '~/types/components/Carousel.interface'
 
 @Component
 export default class HomeCarousel extends Vue {
@@ -67,6 +66,13 @@ export default class HomeCarousel extends Vue {
       return pixels <= 500 ? 1 : pixels <= 768 ? 2 : 3
     } else return 3
   }
+}
+
+// TS Stuff
+export interface ICarouselData {
+  title?: string
+  content?: string
+  image?: string
 }
 </script>
 

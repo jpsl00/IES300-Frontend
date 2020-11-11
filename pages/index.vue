@@ -121,8 +121,7 @@
 <script lang="ts">
 import { NuxtAxiosInstance } from '@nuxtjs/axios'
 import { Component, Vue } from 'nuxt-property-decorator'
-import HomeCarousel from '~/components/HomeCarousel.vue'
-import { ICarouselData } from '~/types/components/Carousel.interface'
+import HomeCarousel, { ICarouselData } from '~/components/HomeCarousel.vue'
 
 @Component({
   components: {
@@ -298,16 +297,5 @@ export default class Home extends Vue {
   background: url('~assets/bioveda-centro-de-saude-integrativa-ayurveda.webp')
     center center !important;
   background-size: cover !important;
-}
-
-.has-background-ayurveda {
-  background: url('~assets/fundo-ayurveda.jpg') center center repeat fixed;
-  background-size: contain;
-}
-
-.has-inset-shadow {
-  box-shadow: inset 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1),
-    inset 0 0px 0 1px rgba(10, 10, 10, 0.02),
-    inset 0 -0.5em 1em -0.125em rgba(10, 10, 10, 0.1);
 }
 </style>

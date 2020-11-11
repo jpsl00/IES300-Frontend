@@ -1,6 +1,6 @@
 <template>
   <div>
-    <section class="hero is-medium">
+    <section class="hero is-large has-background-white-ter has-inset-shadow">
       <div class="hero-body">
         <div class="container">
           <div class="columns is-centered is-multiline">
@@ -60,7 +60,7 @@
                     :disabled="isSubmitted"
                   />
 
-                  <div class="buttons">
+                  <div class="buttons mt-3">
                     <b-button
                       type="is-primary"
                       icon-left="sign-in-alt"

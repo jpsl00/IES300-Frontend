@@ -5,7 +5,6 @@ import {
   VuexAction,
 } from 'nuxt-property-decorator'
 import { $axios } from '~/utils/api'
-import { IAuthenticationLoginUser } from '~/types/store/authentication.interface'
 import * as b64 from '~/utils/b64-helper'
 
 @Module({
@@ -17,7 +16,7 @@ import * as b64 from '~/utils/b64-helper'
 export default class Authorization extends VuexModule {
   public status: string | null = null
   public token: string | null = null
-  public user: Object | null = null
+  public user: IAuthenticationUser | null = null
 
   // Actions
   @VuexAction
@@ -30,11 +29,13 @@ export default class Authorization extends VuexModule {
           password: b64.encodeB64(data.password),
         })
       )
-      const resp = await $axios.$post('/auth/login', { data: encodedData })
+      const resp: {
+        token: string
+        user: IAuthenticationUser
+      } = await $axios.$post('/auth/login', { data: encodedData })
       const { token, user } = resp
-
       $axios.defaults.headers.common.authorization = token
-      this.context.commit('authSuccess', token, user)
+      await this.context.commit('authSuccess', { token, user })
     } catch (err) {
       this.context.commit('authError')
     }
@@ -53,7 +54,7 @@ export default class Authorization extends VuexModule {
   }
 
   @VuexMutation
-  authSuccess(token: string, user: Object) {
+  authSuccess({ token, user }: { token: string; user: IAuthenticationUser }) {
     this.status = 'success'
     this.token = token
     this.user = user
@@ -81,4 +82,16 @@ export default class Authorization extends VuexModule {
   get authStatus() {
     return this.status
   }
+}
+
+// TS Stuff
+export interface IAuthenticationLoginUser {
+  username: string
+  password: string
+}
+
+export interface IAuthenticationUser {
+  id: number
+  name: string
+  role: number
 }
