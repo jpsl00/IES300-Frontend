@@ -84,6 +84,7 @@
                 aria-hidden="false"
                 tabindex="0"
                 class="box p-0"
+                loading="lazy"
               />
             </div>
           </div>

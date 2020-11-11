@@ -33,6 +33,7 @@
             allowfullscreen=""
             aria-hidden="false"
             tabindex="0"
+            loading="lazy"
           ></iframe>
         </div>
         <div class="column is-1"></div>

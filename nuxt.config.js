@@ -62,7 +62,7 @@ export default {
     '@nuxt/typescript-build',
 
     // Font Awesome
-    '@nuxtjs/fontawesome',
+    /* '@nuxtjs/fontawesome', */
 
     'nuxt-compress',
 
@@ -87,9 +87,11 @@ export default {
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
     transpile: ['vee-validate/dist/rules'],
-    exxtend(config, { isClient }) {
+    extend(config, { isClient }) {
       if (isClient) config.optimization.splitChunks.maxSize = 200000
     },
+    extractCSS: true,
+    parallel: true,
   },
 
   // Buefy Configuration
