@@ -65,8 +65,8 @@
                       type="is-primary"
                       icon-left="sign-in-alt"
                       :loading="isSubmitted"
-                      @click="handleSubmit(onSubmit)"
                       :disabled="invalid"
+                      @click="handleSubmit(onSubmit)"
                     >
                       Entrar
                     </b-button>

@@ -2,7 +2,7 @@
   <b-carousel-list
     v-model="index"
     :data="data"
-    :items-to-show="itemsToShow"
+    :items-to-show="items"
     class="is-shadowless"
     autoplay="true"
     repeat
@@ -32,29 +32,41 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'nuxt-property-decorator'
-/* import { useWindowSize } from '@vueuse/core' */
 import { ICarouselData } from '~/types/components/Carousel.interface'
 
 @Component
 export default class HomeCarousel extends Vue {
   private index = 0
-  /* private items = 3 */
+  private items = 0
+  private width = 0
 
   @Prop(Array) data!: ICarouselData[]
 
+  onResize() {
+    if (process.client) {
+      this.width = window.innerWidth
+      this.items = this.itemsToShow
+    }
+  }
+
+  created() {
+    if (process.client) {
+      window.addEventListener('resize', this.onResize)
+      this.onResize()
+    }
+  }
+
+  destroyed() {
+    if (process.client) window.removeEventListener('resize', this.onResize)
+  }
+
   get itemsToShow() {
     if (process.client) {
-      //const { width } = useWindowSize()
-      //const pixels: number = width.value
-      const pixels = window.innerWidth
+      const pixels = this.width
 
       return pixels <= 500 ? 1 : pixels <= 768 ? 2 : 3
     } else return 3
   }
-
-  /* onResize() {
-    this.items = this.itemsToShow()
-  } */
 }
 </script>
 
