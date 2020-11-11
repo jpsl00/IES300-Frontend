@@ -66,7 +66,7 @@ export default {
 
     'nuxt-compress',
 
-    '@nuxtjs/composition-api',
+    /* '@nuxtjs/composition-api', */
   ],
 
   // Modules (https://go.nuxtjs.dev/config-modules)

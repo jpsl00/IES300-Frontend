@@ -6,6 +6,7 @@
     class="is-shadowless"
     autoplay="true"
     repeat
+    @resize="onResize"
   >
     <template slot="item" slot-scope="list">
       <div class="p-3">
@@ -31,21 +32,29 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'nuxt-property-decorator'
-import { useWindowSize } from '@vueuse/core'
+/* import { useWindowSize } from '@vueuse/core' */
 import { ICarouselData } from '~/types/components/Carousel.interface'
 
 @Component
 export default class HomeCarousel extends Vue {
   private index = 0
+  /* private items = 3 */
 
   @Prop(Array) data!: ICarouselData[]
 
   get itemsToShow() {
-    const { width } = useWindowSize()
-    const pixels: number = width.value
+    if (process.client) {
+      //const { width } = useWindowSize()
+      //const pixels: number = width.value
+      const pixels = window.innerWidth
 
-    return pixels <= 500 ? 1 : pixels <= 768 ? 2 : 3
+      return pixels <= 500 ? 1 : pixels <= 768 ? 2 : 3
+    } else return 3
   }
+
+  /* onResize() {
+    this.items = this.itemsToShow()
+  } */
 }
 </script>
 
