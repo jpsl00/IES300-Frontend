@@ -20,10 +20,10 @@
       <div>
         <div class="control">
           <textarea
-            class="textarea has-fixed-size is-borderless"
+            class="textarea has-fixed-size is-borderless is-unselectable"
             :value="record.comment"
             readonly
-          ></textarea>
+          />
         </div>
       </div>
       <div

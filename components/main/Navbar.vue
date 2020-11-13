@@ -20,7 +20,7 @@
       <b-navbar-dropdown label="Serviços" hoverable boxed collapsible>
         <b-navbar-item
           tag="router-link"
-          :to="{ path: '/serviços/agendamento' }"
+          :to="{ path: '/servicos/agendamento' }"
         >
           Agendamento
         </b-navbar-item>
@@ -29,17 +29,15 @@
     </template>
     <template v-if="!isLoggedIn" slot="end">
       <b-navbar-item tag="div">
-        <div class="buttons">
-          <b-button
-            type="is-primary"
-            icon-left="sign-in-alt"
-            tag="router-link"
-            to="/login"
-            :disabled="this.$route.path === '/login'"
-          >
-            Entrar
-          </b-button>
-        </div>
+        <b-button
+          type="is-primary"
+          icon-left="sign-in-alt"
+          tag="router-link"
+          to="/login"
+          :disabled="this.$route.path === '/login'"
+        >
+          Entrar
+        </b-button>
       </b-navbar-item>
     </template>
     <template v-else slot="end">

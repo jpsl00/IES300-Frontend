@@ -119,6 +119,9 @@ export default class Login extends Vue {
   @authentication.Getter
   private authStatus!: string
 
+  @authentication.Getter
+  private isLoggedIn!: boolean
+
   get isLoggingIn() {
     return this.authStatus === 'loading'
   }
@@ -165,7 +168,7 @@ export default class Login extends Vue {
         queue: false,
       })
       this.isSubmitted = false
-    } else if (status === 'success') {
+    } else if (status === 'success' && this.isLoggedIn) {
       if (this.timeoutId) clearTimeout(this.timeoutId)
       this.$buefy.toast.open({
         duration: 3000,
@@ -179,7 +182,7 @@ export default class Login extends Vue {
   }
 
   created() {
-    if (this.authStatus === 'success') this.$router.go(-1)
+    if (this.isLoggedIn) this.$router.go(-1)
   }
 }
 </script>

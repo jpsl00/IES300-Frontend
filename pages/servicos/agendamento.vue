@@ -21,14 +21,23 @@
           </nav>
         </div>
       </div>
-      <pre-appointments-component
+      <appointment-component
         v-for="(record, idx) in records"
         :key="record.id"
         :record="record"
         :index="idx"
       />
+      <div class="column is-10-desktop is-12-mobile">
+        <b-pagination
+          v-model="current"
+          :total="total"
+          :per-page="perPage"
+          :disabled="isChanging"
+          @change="onChangePage"
+        />
+      </div>
     </div>
-    <div class="modal" :class="{ 'is-active': isActive }">
+    <div class="modal" :class="{ 'is-active': isModalActive }">
       <div class="modal-background"></div>
       <div class="modal-card">
         <header class="modal-card-head">
@@ -64,37 +73,36 @@ import AppointmentComponent from '@/components/Appointment.vue'
 import { $axios } from '~/utils/api'
 
 @Component({
-  data() {
-    return {
-      isActive: false,
-      comment: '',
-    }
-  },
   components: { AppointmentComponent },
+  middleware: ['auth'],
 })
 export default class Appointments extends Vue {
   private records: any[] = []
+  private current = 1
+  private total = 0
+  private perPage = 3
+  private isChanging = false
+  private isModalActive = false
+  private comment = ''
 
-  fetchData() {
-    $axios.get(`/pre-appointment/`).then((v) => {
-      this.records = v.data
-    })
-  }
+  async fetch() {
+    const { total } = await $axios.$get('/pre-appointment/count')
+    const records = await $axios.$get(`/pre-appointment/`)
 
-  created() {
-    this.fetchData()
+    this.total = total
+    this.records = records
   }
 
   openModal() {
-    this.$data.isActive = true
+    this.isModalActive = true
   }
 
   closeModal() {
-    this.$data.isActive = false
+    this.isModalActive = false
   }
 
   newRecord() {
-    const comment = this.$data.comment || ''
+    const comment = this.comment || ''
     const id = this.$store.state.authentication.user.id
     $axios
       .post(`/pre-appointment/`, {
@@ -102,6 +110,17 @@ export default class Appointments extends Vue {
         client: id,
       })
       .then(() => this.$router.go(0))
+  }
+
+  async onChangePage() {
+    this.isChanging = true
+    this.records = await $axios.$get(`/pre-appointment/`, {
+      params: {
+        page: this.current,
+        limit: this.perPage,
+      },
+    })
+    this.isChanging = false
   }
 }
 </script>

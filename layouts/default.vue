@@ -14,6 +14,7 @@ import NavbarComponent from '@/components/main/Navbar.vue'
 import FooterComponent from '@/components/main/Footer.vue'
 
 import { $axios } from '~/utils/api'
+import { IAuthenticationUser } from '~/store/authentication'
 
 const authentication = namespace('authentication')
 
@@ -26,6 +27,9 @@ const authentication = namespace('authentication')
 export default class DefaultLayout extends Vue {
   @authentication.State
   private token!: string
+
+  @authentication.State
+  private user!: IAuthenticationUser
 
   created() {
     if (this.token) $axios.defaults.headers.common.authorization = this.token
@@ -46,7 +50,10 @@ export default class DefaultLayout extends Vue {
   async checkToken() {
     try {
       await $axios.$post('/auth/check')
-
+      this.$store.commit('authentication/authSuccess', {
+        token: this.token,
+        user: this.user,
+      })
       // if (res.status === 401) this.$store.dispatch('authentication/logout')
     } catch (e) {
       this.$store.dispatch('authentication/logout')
