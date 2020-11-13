@@ -6,12 +6,16 @@
   </div>
 </template>
 
-<script>
-import { Component, Vue } from 'nuxt-property-decorator'
+<script lang="ts">
+import { Component, Vue, namespace } from 'nuxt-property-decorator'
 
 // Components
-import NavbarComponent from '@/components/main/Navbar'
-import FooterComponent from '@/components/main/Footer'
+import NavbarComponent from '@/components/main/Navbar.vue'
+import FooterComponent from '@/components/main/Footer.vue'
+
+import { $axios } from '~/utils/api'
+
+const authentication = namespace('authentication')
 
 @Component({
   components: {
@@ -19,5 +23,34 @@ import FooterComponent from '@/components/main/Footer'
     FooterComponent,
   },
 })
-export default class DefaultLayout extends Vue {}
+export default class DefaultLayout extends Vue {
+  @authentication.State
+  private token!: string
+
+  created() {
+    if (this.token) $axios.defaults.headers.common.authorization = this.token
+
+    $axios.interceptors.response.use(
+      (res) => res,
+      (err) => {
+        if (err.response.status === 401) {
+          this.$store.dispatch('authentication/logout')
+          this.$router.push('/')
+        }
+      }
+    )
+
+    this.checkToken()
+  }
+
+  async checkToken() {
+    try {
+      await $axios.$post('/auth/check')
+
+      // if (res.status === 401) this.$store.dispatch('authentication/logout')
+    } catch (e) {
+      this.$store.dispatch('authentication/logout')
+    }
+  }
+}
 </script>
