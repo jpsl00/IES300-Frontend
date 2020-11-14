@@ -2,7 +2,7 @@
   <ValidationProvider
     v-slot="{ errors, valid }"
     :vid="vid"
-    :name="$attrs.name || $attrs.label"
+    :name="$attrs.label"
     :rules="rules"
   >
     <b-field
@@ -11,10 +11,9 @@
       :message="errors"
       :expanded="$attrs['field-expanded']"
     >
-      <slot name="input">
-        <b-input v-model="innerValue" v-bind.sync="$attrs" />
-      </slot>
-      <slot name="addon"></slot>
+      <b-select v-model="innerValue" placeholder="Select a subject">
+        <slot />
+      </b-select>
     </b-field>
   </ValidationProvider>
 </template>

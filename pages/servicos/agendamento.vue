@@ -10,58 +10,28 @@
             </div>
             <div class="level-right">
               <div class="level-item">
-                <a class="button is-warning" @click="openModal">
-                  <span class="icon">
-                    <i class="fas fa-plus"></i>
-                  </span>
-                  <span>Novo</span>
-                </a>
+                <b-button type="is-warning" icon-left="plus" @click="newRecord">
+                  Novo
+                </b-button>
               </div>
             </div>
           </nav>
         </div>
       </div>
-      <appointment-component
-        v-for="(record, idx) in records"
-        :key="record.id"
-        :record="record"
-        :index="idx"
-      />
       <div class="column is-10-desktop is-12-mobile">
-        <b-pagination
-          v-model="current"
-          :total="total"
-          :per-page="perPage"
-          :disabled="isChanging"
-          @change="onChangePage"
+        <appointment-component
+          v-for="(record, idx) in paginatedRecords"
+          :key="record.id"
+          :array="paginatedRecords"
+          :record="record"
+          :index="idx"
+          @delete:record="onDeleteRecord"
         />
       </div>
-    </div>
-    <div class="modal" :class="{ 'is-active': isModalActive }">
-      <div class="modal-background"></div>
-      <div class="modal-card">
-        <header class="modal-card-head">
-          <p class="modal-card-title">Novo Agendamento</p>
-          <button class="delete" aria-label="close"></button>
-        </header>
-        <section class="modal-card-body">
-          <div class="field">
-            <label class="label">Descreva sua situação de saúde</label>
-            <div class="control">
-              <textarea
-                v-model="comment"
-                class="input"
-                name="comment"
-                placeholder="Digite aqui..."
-                rows="50"
-              />
-            </div>
-          </div>
-        </section>
-        <footer class="modal-card-foot">
-          <button class="button is-success" @click="newRecord">Salvar</button>
-          <button class="button is-danger" @click="closeModal">Cancelar</button>
-        </footer>
+      <div class="column is-10-desktop is-12-mobile">
+        <div class="box">
+          <b-pagination v-model="current" :total="total" :per-page="perPage" />
+        </div>
       </div>
     </div>
   </section>
@@ -69,7 +39,8 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import AppointmentComponent from '@/components/Appointment.vue'
+import AppointmentComponent from '@/components/appointment/Appointment.vue'
+import AppointmentModalComponent from '@/components/appointment/AppointmentModal.vue'
 import { $axios } from '~/utils/api'
 
 @Component({
@@ -79,48 +50,48 @@ import { $axios } from '~/utils/api'
 export default class Appointments extends Vue {
   private records: any[] = []
   private current = 1
-  private total = 0
   private perPage = 3
-  private isChanging = false
-  private isModalActive = false
+
   private comment = ''
 
+  private isNewModalActive = false
+
   async fetch() {
-    const { total } = await $axios.$get('/pre-appointment/count')
-    const records = await $axios.$get(`/pre-appointment/`)
-
-    this.total = total
-    this.records = records
-  }
-
-  openModal() {
-    this.isModalActive = true
-  }
-
-  closeModal() {
-    this.isModalActive = false
+    this.records = await $axios.$get(`/pre-appointment/`)
   }
 
   newRecord() {
-    const comment = this.comment || ''
+    this.$buefy.modal.open({
+      parent: this,
+      component: AppointmentModalComponent,
+      trapFocus: true,
+      hasModalCard: true,
+      canCancel: false,
+      fullScreen: true,
+    })
+    /* const comment = this.comment || ''
     const id = this.$store.state.authentication.user.id
     $axios
       .post(`/pre-appointment/`, {
         comment,
         client: id,
       })
-      .then(() => this.$router.go(0))
+      .then(() => this.$router.go(0)) */
   }
 
-  async onChangePage() {
-    this.isChanging = true
-    this.records = await $axios.$get(`/pre-appointment/`, {
-      params: {
-        page: this.current,
-        limit: this.perPage,
-      },
-    })
-    this.isChanging = false
+  onDeleteRecord(index: number) {
+    this.records.splice(index, 1)
+  }
+
+  get paginatedRecords() {
+    return this.records.slice(
+      (this.current - 1) * this.perPage,
+      this.perPage * this.current
+    )
+  }
+
+  get total() {
+    return this.records.length
   }
 }
 </script>

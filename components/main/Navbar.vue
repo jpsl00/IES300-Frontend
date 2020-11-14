@@ -12,7 +12,7 @@
       <b-navbar-item
         tag="router-link"
         :to="{ path: '/' }"
-        :active="this.$route.path === '/'"
+        :active="this.$route.name === 'index'"
       >
         Home
       </b-navbar-item>
@@ -34,7 +34,7 @@
           icon-left="sign-in-alt"
           tag="router-link"
           to="/login"
-          :disabled="this.$route.path === '/login'"
+          :disabled="this.$route.name === 'login'"
         >
           Entrar
         </b-button>
@@ -49,7 +49,7 @@
           <b-button
             type="is-danger"
             icon-left="sign-out-alt"
-            :disabled="this.$route.path === '/login'"
+            :disabled="this.$route.name === 'login'"
             @click="logout"
           >
             Sair
@@ -76,7 +76,7 @@ export default class Navbar extends Vue {
   private user!: IAuthenticationUser
 
   get shouldShow() {
-    return this.$route.path !== '/login'
+    return this.$route.name !== 'login'
   }
 
   logout() {

@@ -1,6 +1,12 @@
-/* eslint-disable import/namespace */
+/* eslint-disable camelcase */
 import { extend } from 'vee-validate'
-import { required, min, max } from 'vee-validate/dist/rules'
+import {
+  required,
+  min,
+  max,
+  min_value,
+  max_value,
+} from 'vee-validate/dist/rules'
 import { messages } from 'vee-validate/dist/locale/pt_BR.json'
 
 extend('required', {
@@ -16,4 +22,14 @@ extend('min', {
 extend('max', {
   ...max,
   message: messages.max,
+})
+
+extend('min_value', {
+  ...min_value,
+  message: messages.min_value,
+})
+
+extend('max_value', {
+  ...max_value,
+  message: messages.max_value,
 })

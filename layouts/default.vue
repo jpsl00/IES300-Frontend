@@ -37,7 +37,7 @@ export default class DefaultLayout extends Vue {
     $axios.interceptors.response.use(
       (res) => res,
       (err) => {
-        if (err.response.status === 401) {
+        if (err.response.status === 401 && this.$route.name !== 'login') {
           this.$store.dispatch('authentication/logout')
           this.$router.push('/')
         }
