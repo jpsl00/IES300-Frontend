@@ -68,6 +68,16 @@ export default class Appointments extends Vue {
       hasModalCard: true,
       canCancel: false,
       fullScreen: true,
+      props: {
+        isAllowEditing: true,
+        modalConfig: {
+          title: 'Novo Agendamento',
+          button: {
+            text: 'Criar',
+            type: 'is-success',
+          },
+        },
+      },
     })
     /* const comment = this.comment || ''
     const id = this.$store.state.authentication.user.id

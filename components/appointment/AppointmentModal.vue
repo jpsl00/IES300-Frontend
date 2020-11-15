@@ -1,5 +1,5 @@
 <template>
-  <ValidationObserver class="modal-card">
+  <ValidationObserver class="modal-card" v-slot="{ invalid }">
     <!-- <div class="modal-card" style="width: auto"> -->
     <header class="modal-card-head">
       <p class="modal-card-title">
@@ -104,7 +104,7 @@
         <b-field expanded>
           <InputWithValidation
             v-model="data.medical.language"
-            rules="required"
+            :rules="isEmployee ? 'required' : ''"
             type="text"
             label="Língua"
             vid="language"
@@ -116,7 +116,7 @@
         <b-field expanded>
           <InputWithValidation
             v-model="data.medical.pulse"
-            rules="required"
+            :rules="isEmployee ? 'required' : ''"
             type="text"
             label="Pulso"
             vid="pulse"
@@ -128,7 +128,7 @@
         <b-field expanded>
           <InputWithValidation
             v-model="data.medical.dosha"
-            rules="required"
+            :rules="isEmployee ? 'required' : ''"
             type="text"
             label="Dosha"
             vid="dosha"
@@ -172,6 +172,7 @@
             ? modalConfig.button.type
             : 'is-primary'
         "
+        :disabled="invalid"
       >
         {{
           modalConfig && modalConfig.button
@@ -224,7 +225,7 @@ export default class NewAppointmentModalComponent extends Vue {
     medical: {
       pulse: '',
       language: '',
-      dosha: [],
+      dosha: '',
     },
     complaint: {
       text: '',
