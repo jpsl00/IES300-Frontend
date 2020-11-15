@@ -40,7 +40,9 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import AppointmentComponent from '@/components/appointment/Appointment.vue'
-import AppointmentModalComponent from '@/components/appointment/AppointmentModal.vue'
+import AppointmentModalComponent, {
+  IAppointmentModalData,
+} from '@/components/appointment/AppointmentModal.vue'
 import { $axios } from '~/utils/api'
 
 @Component({
@@ -76,6 +78,14 @@ export default class Appointments extends Vue {
             text: 'Criar',
             type: 'is-success',
           },
+        },
+      },
+      events: {
+        success: (data: IAppointmentModalData, modal: Vue) => {
+          console.log(data)
+          setTimeout(() => {
+            modal.$emit('close')
+          }, 2500)
         },
       },
     })

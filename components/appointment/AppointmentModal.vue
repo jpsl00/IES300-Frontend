@@ -1,5 +1,9 @@
 <template>
-  <ValidationObserver class="modal-card" v-slot="{ invalid }">
+  <ValidationObserver
+    ref="observer"
+    class="modal-card"
+    v-slot="{ handleSubmit, invalid }"
+  >
     <!-- <div class="modal-card" style="width: auto"> -->
     <header class="modal-card-head">
       <p class="modal-card-title">
@@ -11,10 +15,20 @@
     <section class="modal-card-body">
       <b-field v-show="isPartner || isFull" grouped group-multiline expanded>
         <b-field label="Nome" expanded>
-          <b-input :value="user.name" disabled icon="user" />
+          <b-input
+            :value="user.name"
+            :loading="isSubmitted"
+            disabled
+            icon="user"
+          />
         </b-field>
         <b-field label="E-Mail" expanded>
-          <b-input :value="user.email" disabled icon="envelope" />
+          <b-input
+            :value="user.email"
+            :loading="isSubmitted"
+            disabled
+            icon="envelope"
+          />
         </b-field>
       </b-field>
       <b-field
@@ -32,7 +46,8 @@
             vid="address"
             icon="map"
             input-expanded
-            :disabled="!isAllowEditing || isPartner"
+            :disabled="!isAllowEditing || isPartner || isSubmitted"
+            :loading="isSubmitted"
           >
           </InputWithValidation>
         </b-field>
@@ -45,7 +60,8 @@
             vid="telephone"
             icon="phone"
             input-expanded
-            :disabled="!isAllowEditing || isPartner"
+            :disabled="!isAllowEditing || isPartner || isSubmitted"
+            :loading="isSubmitted"
           >
           </InputWithValidation>
         </b-field>
@@ -61,7 +77,8 @@
             vid="weight"
             icon="weight"
             input-expanded
-            :disabled="!isAllowEditing || isPartner"
+            :disabled="!isAllowEditing || isPartner || isSubmitted"
+            :loading="isSubmitted"
           >
             <template slot="addon">
               <p class="control">
@@ -79,7 +96,8 @@
             vid="height"
             icon="ruler"
             input-expanded
-            :disabled="!isAllowEditing || isPartner"
+            :disabled="!isAllowEditing || isPartner || isSubmitted"
+            :loading="isSubmitted"
           >
             <template slot="addon">
               <p class="control">
@@ -95,6 +113,7 @@
             :value="userAge"
             disabled
             icon="birthday-cake"
+            :loading="isSubmitted"
           />
         </b-field>
       </b-field>
@@ -110,7 +129,8 @@
             vid="language"
             icon="language"
             field-expanded
-            :disabled="!isAllowEditing || !isEmployee"
+            :disabled="!isAllowEditing || !isEmployee || isSubmitted"
+            :loading="isSubmitted"
           />
         </b-field>
         <b-field expanded>
@@ -122,7 +142,8 @@
             vid="pulse"
             icon="heartbeat"
             field-expanded
-            :disabled="!isAllowEditing || !isEmployee"
+            :disabled="!isAllowEditing || !isEmployee || isSubmitted"
+            :loading="isSubmitted"
           />
         </b-field>
         <b-field expanded>
@@ -134,7 +155,8 @@
             vid="dosha"
             icon="flask"
             field-expanded
-            :disabled="!isAllowEditing || !isEmployee"
+            :disabled="!isAllowEditing || !isEmployee || isSubmitted"
+            :loading="isSubmitted"
           />
         </b-field>
       </b-field>
@@ -148,14 +170,16 @@
         field-expanded
         maxlength="2500"
         placeholder="Principais problemas que se apresentam no momento (o que o motivou a procurar ajuda)"
-        :disabled="!isAllowEditing || isPartner"
+        :disabled="!isAllowEditing || isPartner || isSubmitted"
+        :loading="isSubmitted"
       >
       </InputWithValidation>
       <SelectWithValidation
         v-model="data.complaint.problemType"
         rules="required"
         label="Estado dos Problemas"
-        :input-disabled="!isAllowEditing || isPartner"
+        :input-disabled="!isAllowEditing || isPartner || isSubmitted"
+        :loading="isSubmitted"
       >
         <option value="1">Estáveis</option>
         <option value="2">Flutuantes</option>
@@ -173,6 +197,8 @@
             : 'is-primary'
         "
         :disabled="invalid"
+        :loading="isSubmitted"
+        @click="handleSubmit(onSubmit)"
       >
         {{
           modalConfig && modalConfig.button
@@ -180,7 +206,12 @@
             : '¯\\_(ツ)_/¯'
         }}
       </b-button>
-      <b-button type="is-danger" @click="$emit('close')">Cancelar</b-button>
+      <b-button type="is-danger" :disabled="isSubmitted" @click="$emit('close')"
+        >Cancelar</b-button
+      >
+      <b-button type="is-warning" :disabled="isSubmitted" @click="onResetForm">
+        Limpar
+      </b-button>
     </footer>
     <!-- </div> -->
   </ValidationObserver>
@@ -206,6 +237,10 @@ const authentication = namespace('authentication')
   },
 })
 export default class NewAppointmentModalComponent extends Vue {
+  $refs!: {
+    observer: InstanceType<typeof ValidationObserver>
+  }
+
   @authentication.State
   private user!: IAuthenticationUser
 
@@ -233,7 +268,9 @@ export default class NewAppointmentModalComponent extends Vue {
     },
   }
 
-  @Prop(Object) readonly readonlyData!: Object
+  public isSubmitted = false
+
+  @Prop(Object) readonly passedData!: Object
 
   @Prop(Boolean) readonly isFull!: Boolean
 
@@ -241,9 +278,51 @@ export default class NewAppointmentModalComponent extends Vue {
 
   @Prop(Object) readonly modalConfig!: IAppointmentModalConfig
 
+  mounted() {
+    this.data = { ...this.data, ...this.passedData }
+
+    if (!this.data.personal.name) this.data.personal.name = this.user.name
+    if (!this.data.personal.email) this.data.personal.email = this.user.email
+    if (!this.data.personal.age)
+      this.data.personal.age = this.userAge.toString()
+  }
+
+  onSubmit() {
+    this.isSubmitted = true
+    const data = this.data
+    this.$emit('success', data, this)
+  }
+
+  onResetForm() {
+    this.data = {
+      personal: {
+        name: '',
+        email: '',
+        address: '',
+        telephone: '',
+        weight: '',
+        height: '',
+        age: '',
+      },
+      medical: {
+        pulse: '',
+        language: '',
+        dosha: '',
+      },
+      complaint: {
+        text: '',
+        problemType: '',
+      },
+      ...this.passedData,
+    }
+    requestAnimationFrame(() => {
+      this.$refs.observer.reset()
+    })
+  }
+
   get userAge() {
     return (
-      new Date().getFullYear() - new Date(this.user.birthdate).getFullYear()
+      new Date().getFullYear() - new Date(this.user?.birthdate).getFullYear()
     )
   }
 
@@ -261,6 +340,27 @@ export interface IAppointmentModalConfig {
   button: {
     text: string
     type: string
+  }
+}
+
+export interface IAppointmentModalData {
+  personal: {
+    name: string
+    email: string
+    address: string
+    telephone: string
+    weight: string
+    height: string
+    age: string
+  }
+  medical: {
+    pulse: string
+    language: string
+    dosha: string
+  }
+  complaint: {
+    text: string
+    problemType: string
   }
 }
 </script>

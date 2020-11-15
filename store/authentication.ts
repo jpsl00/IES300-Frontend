@@ -104,6 +104,8 @@ export interface IAuthenticationLoginUser {
 
 export interface IAuthenticationUser {
   id: number
+  username: string
+  email: string
   name: string
   role: number
   birthdate: string
