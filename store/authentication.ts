@@ -88,6 +88,12 @@ export default class Authorization extends VuexModule {
   get authStatus() {
     return this.status
   }
+
+  get role() {
+    return (this.authenticated
+      ? this.user?.role
+      : -1) as EAuthenticationPermissionLevel
+  }
 }
 
 // TS Stuff
@@ -100,4 +106,13 @@ export interface IAuthenticationUser {
   id: number
   name: string
   role: number
+  birthdate: string
+}
+
+export enum EAuthenticationPermissionLevel {
+  'Invalid' = -1,
+  'User' = 0,
+  'Partner' = 1,
+  'Employee' = 2,
+  'Admin' = 10,
 }

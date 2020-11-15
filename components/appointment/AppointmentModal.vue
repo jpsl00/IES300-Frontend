@@ -2,63 +2,118 @@
   <ValidationObserver class="modal-card">
     <!-- <div class="modal-card" style="width: auto"> -->
     <header class="modal-card-head">
-      <p class="modal-card-title">Novo Agendamento</p>
+      <p class="modal-card-title">
+        {{
+          modalConfig && modalConfig.title ? modalConfig.title : '༼ つ ◕_◕ ༽つ'
+        }}
+      </p>
     </header>
     <section class="modal-card-body">
-      <b-field label="Nome" expanded>
-        <b-input expanded :value="data.personal.name" disabled icon="user" />
+      <b-field v-show="isPartner || isFull" grouped group-multiline expanded>
+        <b-field label="Nome" expanded>
+          <b-input :value="user.name" disabled icon="user" />
+        </b-field>
+        <b-field label="E-Mail" expanded>
+          <b-input :value="user.email" disabled icon="envelope" />
+        </b-field>
       </b-field>
-      <b-field grouped group-multiline>
-        <p class="control"></p>
+      <b-field
+        v-show="!isPartner || isEmployee"
+        grouped
+        group-multiline
+        expanded
+      >
+        <b-field expanded>
+          <InputWithValidation
+            v-model="data.personal.address"
+            label="Endereço"
+            rules="required"
+            type="address"
+            vid="address"
+            icon="map"
+            input-expanded
+            :disabled="!isAllowEditing || isPartner"
+          >
+          </InputWithValidation>
+        </b-field>
+        <b-field expanded>
+          <InputWithValidation
+            v-model="data.personal.telephone"
+            label="Telefone"
+            rules="required"
+            type="tel"
+            vid="telephone"
+            icon="phone"
+            input-expanded
+            :disabled="!isAllowEditing || isPartner"
+          >
+          </InputWithValidation>
+        </b-field>
       </b-field>
       <hr />
       <b-field grouped group-multiline>
-        <p class="control">
+        <b-field expanded>
           <InputWithValidation
             v-model="data.personal.weight"
+            label="Peso"
             rules="required|min_value:1|max_value:250"
             type="number"
-            label="Peso"
             vid="weight"
             icon="weight"
-            field-expanded
+            input-expanded
+            :disabled="!isAllowEditing || isPartner"
           >
             <template slot="addon">
               <p class="control">
-                <button class="button is-static">Kg</button>
+                <b-button disabled>Kg</b-button>
               </p>
             </template>
           </InputWithValidation>
-        </p>
-        <p class="control">
+        </b-field>
+        <b-field expanded>
           <InputWithValidation
             v-model="data.personal.height"
+            label="Altura"
             rules="required|min_value:1|max_value:3"
             type="number"
-            label="Altura"
             vid="height"
             icon="ruler"
-            field-expanded
+            input-expanded
+            :disabled="!isAllowEditing || isPartner"
           >
             <template slot="addon">
               <p class="control">
-                <button class="button is-static">m</button>
+                <b-button disabled>m</b-button>
               </p>
             </template>
           </InputWithValidation>
-        </p>
-        <p class="control">
-          <b-field label="Idade" expanded>
-            <b-input
-              type="number"
-              field-expanded
-              :value="data.personal.age"
-              disabled
-              icon="birthday-cake"
-            />
-          </b-field>
-        </p>
-        <p class="control">
+        </b-field>
+        <b-field v-show="isPartner || isFull" label="Idade" expanded>
+          <b-input
+            type="number"
+            field-expanded
+            :value="userAge"
+            disabled
+            icon="birthday-cake"
+          />
+        </b-field>
+      </b-field>
+
+      <hr v-show="isPartner || isFull" />
+      <b-field v-show="isPartner || isFull" grouped group-multiline>
+        <b-field expanded>
+          <InputWithValidation
+            v-model="data.medical.language"
+            rules="required"
+            type="text"
+            label="Língua"
+            vid="language"
+            icon="language"
+            field-expanded
+            :disabled="!isAllowEditing || !isEmployee"
+          />
+        </b-field>
+        <b-field expanded>
           <InputWithValidation
             v-model="data.medical.pulse"
             rules="required"
@@ -67,12 +122,22 @@
             vid="pulse"
             icon="heartbeat"
             field-expanded
-          >
-          </InputWithValidation>
-        </p>
+            :disabled="!isAllowEditing || !isEmployee"
+          />
+        </b-field>
+        <b-field expanded>
+          <InputWithValidation
+            v-model="data.medical.dosha"
+            rules="required"
+            type="text"
+            label="Dosha"
+            vid="dosha"
+            icon="flask"
+            field-expanded
+            :disabled="!isAllowEditing || !isEmployee"
+          />
+        </b-field>
       </b-field>
-      <hr />
-
       <hr />
       <InputWithValidation
         v-model="data.complaint.text"
@@ -80,16 +145,17 @@
         type="textarea"
         label="Problemas Atuais"
         vid="complaint"
-        label-position="on-border"
         field-expanded
         maxlength="2500"
         placeholder="Principais problemas que se apresentam no momento (o que o motivou a procurar ajuda)"
+        :disabled="!isAllowEditing || isPartner"
       >
       </InputWithValidation>
       <SelectWithValidation
         v-model="data.complaint.problemType"
         rules="required"
         label="Estado dos Problemas"
+        :input-disabled="!isAllowEditing || isPartner"
       >
         <option value="1">Estáveis</option>
         <option value="2">Flutuantes</option>
@@ -100,7 +166,19 @@
       </SelectWithValidation>
     </section>
     <footer class="modal-card-foot">
-      <b-button>Criar</b-button>
+      <b-button
+        :type="
+          modalConfig && modalConfig.button
+            ? modalConfig.button.type
+            : 'is-primary'
+        "
+      >
+        {{
+          modalConfig && modalConfig.button
+            ? modalConfig.button.text
+            : '¯\\_(ツ)_/¯'
+        }}
+      </b-button>
       <b-button type="is-danger" @click="$emit('close')">Cancelar</b-button>
     </footer>
     <!-- </div> -->
@@ -108,10 +186,16 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Vue, Prop, namespace } from 'nuxt-property-decorator'
 import { ValidationObserver } from 'vee-validate'
 import InputWithValidation from '@/components/inputs/InputWithValidation.vue'
 import SelectWithValidation from '@/components/inputs/SelectWithValidation.vue'
+import {
+  IAuthenticationUser,
+  EAuthenticationPermissionLevel,
+} from '~/store/authentication'
+
+const authentication = namespace('authentication')
 
 @Component({
   components: {
@@ -121,28 +205,61 @@ import SelectWithValidation from '@/components/inputs/SelectWithValidation.vue'
   },
 })
 export default class NewAppointmentModalComponent extends Vue {
+  @authentication.State
+  private user!: IAuthenticationUser
+
+  @authentication.Getter
+  private role!: EAuthenticationPermissionLevel
+
   public data = {
     personal: {
       name: '',
+      email: '',
+      address: '',
+      telephone: '',
       weight: '',
       height: '',
       age: '',
-      email: '',
-      address: '',
-      telephones: {
-        household: '',
-        mobile: '',
-      },
-    },
-    complaint: {
-      text: '',
-      problemType: '',
     },
     medical: {
       pulse: '',
       language: '',
       dosha: [],
     },
+    complaint: {
+      text: '',
+      problemType: '',
+    },
+  }
+
+  @Prop(Object) readonly readonlyData!: Object
+
+  @Prop(Boolean) readonly isFull!: Boolean
+
+  @Prop(Boolean) readonly isAllowEditing!: Boolean
+
+  @Prop(Object) readonly modalConfig!: IAppointmentModalConfig
+
+  get userAge() {
+    return (
+      new Date().getFullYear() - new Date(this.user.birthdate).getFullYear()
+    )
+  }
+
+  get isPartner() {
+    return this.role >= EAuthenticationPermissionLevel.Partner
+  }
+
+  get isEmployee() {
+    return this.role >= EAuthenticationPermissionLevel.Employee
+  }
+}
+
+export interface IAppointmentModalConfig {
+  title: string
+  button: {
+    text: string
+    type: string
   }
 }
 </script>

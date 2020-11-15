@@ -4,6 +4,7 @@
     :vid="vid"
     :name="$attrs.label"
     :rules="rules"
+    slim
   >
     <b-field
       v-bind="$attrs"
@@ -11,7 +12,12 @@
       :message="errors"
       :expanded="$attrs['field-expanded']"
     >
-      <b-select v-model="innerValue" placeholder="Select a subject">
+      <b-select
+        v-model="innerValue"
+        :expanded="$attrs['input-expanded']"
+        placeholder="Select a subject"
+        :disabled="$attrs['input-disabled']"
+      >
         <slot />
       </b-select>
     </b-field>
@@ -34,7 +40,7 @@ import { ValidationProvider } from 'vee-validate'
     ValidationProvider,
   },
 })
-export default class InputWithValidation extends Vue {
+export default class SelectWithValidation extends Vue {
   public innerValue = ''
 
   @Prop(String) readonly vid: string | undefined

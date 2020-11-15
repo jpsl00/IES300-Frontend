@@ -4,6 +4,7 @@
     :vid="vid"
     :name="$attrs.name || $attrs.label"
     :rules="rules"
+    slim
   >
     <b-field
       v-bind="$attrs"
@@ -12,9 +13,13 @@
       :expanded="$attrs['field-expanded']"
     >
       <slot name="input">
-        <b-input v-model="innerValue" v-bind.sync="$attrs" />
+        <b-input
+          v-model="innerValue"
+          :expanded="$attrs['input-expanded']"
+          v-bind.sync="$attrs"
+        />
       </slot>
-      <slot name="addon"></slot>
+      <slot name="addon" />
     </b-field>
   </ValidationProvider>
 </template>
