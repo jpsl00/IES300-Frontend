@@ -16,57 +16,40 @@
       <b-field v-show="isPartner || isFull" grouped group-multiline expanded>
         <b-field label="Nome" expanded>
           <b-input
-            :value="user.name"
+            :value="data.personal.name"
             :loading="isSubmitted"
             disabled
             icon="user"
           />
         </b-field>
-        <b-field label="E-Mail" expanded>
+        <b-field v-show="!isPartner || isEmployee" label="E-Mail" expanded>
           <b-input
-            :value="user.email"
+            :value="data.personal.email"
             :loading="isSubmitted"
             disabled
             icon="envelope"
           />
         </b-field>
       </b-field>
-      <b-field
-        v-show="!isPartner || isEmployee"
-        grouped
-        group-multiline
-        expanded
-      >
-        <b-field expanded>
-          <InputWithValidation
-            v-model="data.personal.address"
-            label="Endereço"
-            rules="required"
-            type="address"
-            vid="address"
+      <b-field v-show="isFull && !isPartner" grouped group-multiline expanded>
+        <b-field label="Endereço" expanded>
+          <b-input
+            :value="data.personal.address"
+            :loading="isSubmitted"
+            disabled
             icon="map"
-            input-expanded
-            :disabled="!isAllowEditing || isPartner || isSubmitted"
-            :loading="isSubmitted"
-          >
-          </InputWithValidation>
+          />
         </b-field>
-        <b-field expanded>
-          <InputWithValidation
-            v-model="data.personal.telephone"
-            label="Telefone"
-            rules="required"
-            type="tel"
-            vid="telephone"
-            icon="phone"
-            input-expanded
-            :disabled="!isAllowEditing || isPartner || isSubmitted"
+        <b-field label="Telefone" expanded>
+          <b-input
+            :value="data.personal.telephone"
             :loading="isSubmitted"
-          >
-          </InputWithValidation>
+            disabled
+            icon="phone"
+          />
         </b-field>
       </b-field>
-      <hr />
+      <hr v-show="isFull && !isPartner" />
       <b-field grouped group-multiline>
         <b-field expanded>
           <InputWithValidation
@@ -77,7 +60,9 @@
             vid="weight"
             icon="weight"
             input-expanded
-            :disabled="!isAllowEditing || isPartner || isSubmitted"
+            :disabled="
+              !isAllowEditing || isPartner || isEmployee || isSubmitted
+            "
             :loading="isSubmitted"
           >
             <template slot="addon">
@@ -96,7 +81,9 @@
             vid="height"
             icon="ruler"
             input-expanded
-            :disabled="!isAllowEditing || isPartner || isSubmitted"
+            :disabled="
+              !isAllowEditing || isPartner || isEmployee || isSubmitted
+            "
             :loading="isSubmitted"
           >
             <template slot="addon">
@@ -123,7 +110,7 @@
         <b-field expanded>
           <InputWithValidation
             v-model="data.medical.language"
-            :rules="isEmployee ? 'required' : ''"
+            :rules="isEmployee && isAllowEditing ? 'required' : ''"
             type="text"
             label="Língua"
             vid="language"
@@ -136,7 +123,7 @@
         <b-field expanded>
           <InputWithValidation
             v-model="data.medical.pulse"
-            :rules="isEmployee ? 'required' : ''"
+            :rules="isEmployee && isAllowEditing ? 'required' : ''"
             type="text"
             label="Pulso"
             vid="pulse"
@@ -149,7 +136,7 @@
         <b-field expanded>
           <InputWithValidation
             v-model="data.medical.dosha"
-            :rules="isEmployee ? 'required' : ''"
+            :rules="isEmployee && isAllowEditing ? 'required' : ''"
             type="text"
             label="Dosha"
             vid="dosha"
@@ -170,15 +157,17 @@
         field-expanded
         maxlength="2500"
         placeholder="Principais problemas que se apresentam no momento (o que o motivou a procurar ajuda)"
-        :disabled="!isAllowEditing || isPartner || isSubmitted"
+        :disabled="!isAllowEditing || isPartner || isEmployee || isSubmitted"
         :loading="isSubmitted"
       >
       </InputWithValidation>
       <SelectWithValidation
-        v-model="data.complaint.problemType"
+        v-model="data.complaint.type"
         rules="required"
         label="Estado dos Problemas"
-        :input-disabled="!isAllowEditing || isPartner || isSubmitted"
+        :input-disabled="
+          !isAllowEditing || isPartner || isEmployee || isSubmitted
+        "
         :loading="isSubmitted"
       >
         <option value="1">Estáveis</option>
@@ -198,20 +187,23 @@
         "
         :disabled="invalid"
         :loading="isSubmitted"
-        @click="handleSubmit(onSubmit)"
-      >
-        {{
+        :label="
           modalConfig && modalConfig.button
             ? modalConfig.button.text
             : '¯\\_(ツ)_/¯'
-        }}
-      </b-button>
-      <b-button type="is-danger" :disabled="isSubmitted" @click="$emit('close')"
-        >Cancelar</b-button
+        "
+        @click="handleSubmit(onSubmit)"
+      />
+      <b-button
+        type="is-danger"
+        :disabled="isSubmitted"
+        @click="$emit('close')"
       >
-      <b-button type="is-warning" :disabled="isSubmitted" @click="onResetForm">
-        Limpar
+        Cancelar
       </b-button>
+      <!-- <b-button type="is-warning" :disabled="isSubmitted" @click="onResetForm">
+        Limpar
+      </b-button> -->
     </footer>
     <!-- </div> -->
   </ValidationObserver>
@@ -248,7 +240,9 @@ export default class NewAppointmentModalComponent extends Vue {
   private role!: EAuthenticationPermissionLevel
 
   public data = {
+    id: 0,
     personal: {
+      client: 0,
       name: '',
       email: '',
       address: '',
@@ -260,11 +254,11 @@ export default class NewAppointmentModalComponent extends Vue {
     medical: {
       pulse: '',
       language: '',
-      dosha: '',
+      dosha: [],
     },
     complaint: {
       text: '',
-      problemType: '',
+      type: '',
     },
   }
 
@@ -281,6 +275,7 @@ export default class NewAppointmentModalComponent extends Vue {
   mounted() {
     this.data = { ...this.data, ...this.passedData }
 
+    if (!this.data.personal.client) this.data.personal.client = this.user.id
     if (!this.data.personal.name) this.data.personal.name = this.user.name
     if (!this.data.personal.email) this.data.personal.email = this.user.email
     if (!this.data.personal.age)
@@ -292,7 +287,7 @@ export default class NewAppointmentModalComponent extends Vue {
     const data = this.data
     this.$emit('success', data, this)
   }
-
+  /*
   onResetForm() {
     this.data = {
       personal: {
@@ -311,14 +306,15 @@ export default class NewAppointmentModalComponent extends Vue {
       },
       complaint: {
         text: '',
-        problemType: '',
+        type: '',
       },
       ...this.passedData,
     }
+    this.mounted()
     requestAnimationFrame(() => {
       this.$refs.observer.reset()
     })
-  }
+  } */
 
   get userAge() {
     return (
@@ -326,13 +322,14 @@ export default class NewAppointmentModalComponent extends Vue {
     )
   }
 
-  get isPartner() {
-    return this.role >= EAuthenticationPermissionLevel.Partner
-  }
+  @authentication.Getter
+  readonly isClient!: boolean
 
-  get isEmployee() {
-    return this.role >= EAuthenticationPermissionLevel.Employee
-  }
+  @authentication.Getter
+  readonly isPartner!: boolean
+
+  @authentication.Getter
+  readonly isEmployee!: boolean
 }
 
 export interface IAppointmentModalConfig {
@@ -344,7 +341,9 @@ export interface IAppointmentModalConfig {
 }
 
 export interface IAppointmentModalData {
+  id: number
   personal: {
+    client: number
     name: string
     email: string
     address: string
@@ -360,7 +359,8 @@ export interface IAppointmentModalData {
   }
   complaint: {
     text: string
-    problemType: string
+    type: string
   }
+  appointments?: any[]
 }
 </script>

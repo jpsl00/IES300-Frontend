@@ -1,14 +1,15 @@
 <template>
-  <section class="section">
+  <section class="section has-inset-shadow">
     <div class="columns is-centered is-vcentered is-multiline">
-      <div class="column is-10-desktop is-12-mobile">
+      <div class="column is-10-desktop is-12-touch">
         <div class="box">
           <nav class="level">
             <div class="level-left">
-              <div class="level-item"></div>
-              <p class="subtitle is-4">Agendamentos</p>
+              <div class="level-item">
+                <p class="subtitle is-4">Agendamentos</p>
+              </div>
             </div>
-            <div class="level-right">
+            <div v-show="isClient" class="level-right">
               <div class="level-item">
                 <b-button type="is-warning" icon-left="plus" @click="newRecord">
                   Novo
@@ -18,17 +19,18 @@
           </nav>
         </div>
       </div>
-      <div class="column is-10-desktop is-12-mobile">
+      <div class="column is-10-desktop is-12-touch">
         <appointment-component
           v-for="(record, idx) in paginatedRecords"
           :key="record.id"
-          :array="paginatedRecords"
           :record="record"
+          :array="paginatedRecords"
           :index="idx"
           @delete:record="onDeleteRecord"
+          @update:record="onUpdateRecord"
         />
       </div>
-      <div class="column is-10-desktop is-12-mobile">
+      <div class="column is-10-desktop is-12-touch">
         <div class="box">
           <b-pagination v-model="current" :total="total" :per-page="perPage" />
         </div>
@@ -53,7 +55,7 @@ const authentication = namespace('authentication')
   middleware: ['auth'],
 })
 export default class Appointments extends Vue {
-  private records: any[] = []
+  public records: Partial<IAppointmentModalData>[] = []
   private current = 1
   private perPage = 3
 
@@ -61,8 +63,8 @@ export default class Appointments extends Vue {
 
   private isNewModalActive = false
 
-  @authentication.State
-  private user!: IAuthenticationUser
+  @authentication.Getter
+  private readonly isClient!: boolean
 
   async fetch() {
     this.records = await $axios.$get(`/pre-appointment/`)
@@ -87,17 +89,14 @@ export default class Appointments extends Vue {
         },
       },
       events: {
-        success: async (data: IAppointmentModalData, modal: Vue) => {
+        success: (data: IAppointmentModalData, modal: Vue) => {
           return $axios
             .post(`/pre-appointment/`, {
-              comment: data.complaint.text,
-              client: this.user.id,
+              complaint: { ...data.complaint },
+              personal: { ...data.personal },
             })
             .then(({ data: createdAppointment }) => {
-              this.records.unshift({
-                id: createdAppointment.data.id,
-                comment: data.complaint.text,
-              })
+              this.records.unshift(createdAppointment.data)
               this.$buefy.toast.open({
                 duration: 3000,
                 message: 'Agendamento criado!',
@@ -132,6 +131,22 @@ export default class Appointments extends Vue {
 
   onDeleteRecord(index: number) {
     this.records.splice(index, 1)
+    this.$buefy.toast.open({
+      message: 'Agendamento cancelado!',
+      type: 'is-info',
+      position: 'is-bottom-right',
+      duration: 3000,
+    })
+  }
+
+  onUpdateRecord(index: number, record: IAppointmentModalData) {
+    this.records[index] = record
+    this.$buefy.toast.open({
+      message: 'Agendamento atualizado!',
+      type: 'is-success',
+      position: 'is-bottom-right',
+      duration: 3000,
+    })
   }
 
   get paginatedRecords() {

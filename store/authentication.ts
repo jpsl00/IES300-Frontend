@@ -7,6 +7,14 @@ import {
 import { $axios } from '~/utils/api'
 import * as b64 from '~/utils/b64-helper'
 
+export enum EAuthenticationPermissionLevel {
+  'Invalid' = -1,
+  'User' = 0,
+  'Partner' = 1,
+  'Employee' = 2,
+  'Admin' = 10,
+}
+
 @Module({
   name: 'authentication',
   stateFactory: true,
@@ -81,7 +89,7 @@ export default class Authorization extends VuexModule {
   }
 
   // Getters
-  get isLoggedIn() {
+  get isLoggedIn(): boolean {
     return this.authenticated && !!this.token
   }
 
@@ -93,6 +101,22 @@ export default class Authorization extends VuexModule {
     return (this.authenticated
       ? this.user?.role
       : -1) as EAuthenticationPermissionLevel
+  }
+
+  get isClient(): boolean {
+    return this.isLoggedIn && this.role === EAuthenticationPermissionLevel.User
+  }
+
+  get isPartner(): boolean {
+    return (
+      this.isLoggedIn && this.role === EAuthenticationPermissionLevel.Partner
+    )
+  }
+
+  get isEmployee(): boolean {
+    return (
+      this.isLoggedIn && this.role >= EAuthenticationPermissionLevel.Employee
+    )
   }
 }
 
@@ -109,12 +133,4 @@ export interface IAuthenticationUser {
   name: string
   role: number
   birthdate: string
-}
-
-export enum EAuthenticationPermissionLevel {
-  'Invalid' = -1,
-  'User' = 0,
-  'Partner' = 1,
-  'Employee' = 2,
-  'Admin' = 10,
 }
