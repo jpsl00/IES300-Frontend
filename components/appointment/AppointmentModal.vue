@@ -1,8 +1,8 @@
 <template>
   <ValidationObserver
     ref="observer"
-    class="modal-card"
     v-slot="{ handleSubmit, invalid }"
+    class="modal-card"
   >
     <!-- <div class="modal-card" style="width: auto"> -->
     <header class="modal-card-head">

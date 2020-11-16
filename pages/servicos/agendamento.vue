@@ -38,12 +38,15 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, namespace } from 'nuxt-property-decorator'
 import AppointmentComponent from '@/components/appointment/Appointment.vue'
 import AppointmentModalComponent, {
   IAppointmentModalData,
 } from '@/components/appointment/AppointmentModal.vue'
 import { $axios } from '~/utils/api'
+import { IAuthenticationUser } from '~/store/authentication'
+
+const authentication = namespace('authentication')
 
 @Component({
   components: { AppointmentComponent },
@@ -57,6 +60,9 @@ export default class Appointments extends Vue {
   private comment = ''
 
   private isNewModalActive = false
+
+  @authentication.State
+  private user!: IAuthenticationUser
 
   async fetch() {
     this.records = await $axios.$get(`/pre-appointment/`)
@@ -81,11 +87,36 @@ export default class Appointments extends Vue {
         },
       },
       events: {
-        success: (data: IAppointmentModalData, modal: Vue) => {
-          console.log(data)
-          setTimeout(() => {
-            modal.$emit('close')
-          }, 2500)
+        success: async (data: IAppointmentModalData, modal: Vue) => {
+          return $axios
+            .post(`/pre-appointment/`, {
+              comment: data.complaint.text,
+              client: this.user.id,
+            })
+            .then(({ data: createdAppointment }) => {
+              this.records.unshift({
+                id: createdAppointment.data.id,
+                comment: data.complaint.text,
+              })
+              this.$buefy.toast.open({
+                duration: 3000,
+                message: 'Agendamento criado!',
+                type: 'is-success',
+                position: 'is-bottom-right',
+                queue: false,
+              })
+              setTimeout(() => modal.$emit('close'), 2500)
+            })
+            .catch(() => {
+              this.$buefy.toast.open({
+                duration: 3000,
+                message: 'Houve um erro inesperado, por favor tente novamente',
+                type: 'is-warning',
+                position: 'is-bottom-right',
+                queue: false,
+              })
+              ;(modal as any).isSubmitted = false
+            })
         },
       },
     })
