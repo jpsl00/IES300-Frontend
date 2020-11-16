@@ -133,18 +133,53 @@
             :loading="isSubmitted"
           />
         </b-field>
+      </b-field>
+      <b-field v-show="isPartner || isFull" grouped group-multiline>
         <b-field expanded>
           <InputWithValidation
-            v-model="data.medical.dosha"
             :rules="isEmployee && isAllowEditing ? 'required' : ''"
             type="text"
             label="Dosha"
             vid="dosha"
-            icon="flask"
-            field-expanded
-            :disabled="!isAllowEditing || !isEmployee || isSubmitted"
-            :loading="isSubmitted"
-          />
+          >
+            <template slot="input">
+              <b-taginput
+                v-model="data.medical.dosha"
+                icon="flask"
+                :loading="isSubmitted"
+                :disabled="!isAllowEditing || !isEmployee || isSubmitted"
+                expanded
+                type="is-primary"
+              >
+              </b-taginput>
+            </template>
+          </InputWithValidation>
+        </b-field>
+        <b-field expanded>
+          <InputWithValidation
+            :rules="isEmployee && isAllowEditing ? 'required' : ''"
+            type="text"
+            label="Parceiros"
+            vid="partners"
+          >
+            <template slot="input">
+              <b-taginput
+                v-model="data.medical.recommendations"
+                :allow-new="false"
+                autocomplete
+                allow-duplicates
+                open-on-focus
+                :data="partners"
+                field="field"
+                icon="user-md"
+                :loading="isSubmitted"
+                :disabled="!isAllowEditing || !isEmployee || isSubmitted"
+                expanded
+                type="is-primary"
+              >
+              </b-taginput>
+            </template>
+          </InputWithValidation>
         </b-field>
       </b-field>
       <hr />
@@ -218,6 +253,7 @@ import {
   IAuthenticationUser,
   EAuthenticationPermissionLevel,
 } from '~/store/authentication'
+import { $axios } from '~/utils/api'
 
 const authentication = namespace('authentication')
 
@@ -255,12 +291,15 @@ export default class NewAppointmentModalComponent extends Vue {
       pulse: '',
       language: '',
       dosha: [],
+      recommendations: [],
     },
     complaint: {
       text: '',
       type: '',
     },
   }
+
+  public partners = []
 
   public isSubmitted = false
 
@@ -271,6 +310,12 @@ export default class NewAppointmentModalComponent extends Vue {
   @Prop(Boolean) readonly isAllowEditing!: Boolean
 
   @Prop(Object) readonly modalConfig!: IAppointmentModalConfig
+
+  async fetch() {
+    if (this.isAllowEditing && this.isEmployee) {
+      this.partners = (await $axios.$get('/partner/')).data
+    }
+  }
 
   mounted() {
     this.data = { ...this.data, ...this.passedData }
@@ -356,6 +401,7 @@ export interface IAppointmentModalData {
     pulse: string
     language: string
     dosha: string
+    recommendations: string[]
   }
   complaint: {
     text: string

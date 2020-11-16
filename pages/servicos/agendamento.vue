@@ -46,7 +46,6 @@ import AppointmentModalComponent, {
   IAppointmentModalData,
 } from '@/components/appointment/AppointmentModal.vue'
 import { $axios } from '~/utils/api'
-import { IAuthenticationUser } from '~/store/authentication'
 
 const authentication = namespace('authentication')
 
