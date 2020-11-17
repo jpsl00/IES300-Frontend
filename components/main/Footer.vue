@@ -13,7 +13,7 @@
                 <a>Serviços</a>
                 <ul>
                   <li>
-                    <router-link to="/serviços/agendamento"
+                    <router-link to="/servicos/agendamento"
                       >Agendamento</router-link
                     >
                   </li>

@@ -94,7 +94,7 @@ export default {
     extend(config, { isClient }) {
       if (isClient) config.optimization.splitChunks.maxSize = 200000
     },
-    extractCSS: true,
+    /* extractCSS: true, */
     parallel: true,
   },
 

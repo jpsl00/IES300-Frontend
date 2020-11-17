@@ -318,6 +318,8 @@ export default class NewAppointmentModalComponent extends Vue {
     ) as any[]
   }
 
+  fetchOnServer = false
+
   mounted() {
     this.data = { ...this.data, ...this.passedData }
 

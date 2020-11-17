@@ -32,7 +32,12 @@
       </div>
       <div class="column is-10-desktop is-12-touch">
         <div class="box">
-          <b-pagination v-model="current" :total="total" :per-page="perPage" />
+          <b-pagination
+            v-model="current"
+            :total="total"
+            :per-page="perPage"
+            @change="onPageChange"
+          />
         </div>
       </div>
     </div>
@@ -146,6 +151,10 @@ export default class Appointments extends Vue {
       position: 'is-bottom-right',
       duration: 3000,
     })
+  }
+
+  onPageChange() {
+    if (process.client) window.scrollTo(0, 0)
   }
 
   get paginatedRecords() {
