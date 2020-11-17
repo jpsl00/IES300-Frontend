@@ -6,7 +6,7 @@
           <nav class="level">
             <div class="level-left">
               <div class="level-item">
-                <p class="subtitle is-4">Agendamentos</p>
+                <p class="title is-3">Agendamentos</p>
               </div>
             </div>
             <div v-show="isClient" class="level-right">
@@ -94,8 +94,8 @@ export default class Appointments extends Vue {
               complaint: { ...data.complaint },
               personal: { ...data.personal },
             })
-            .then(({ data: createdAppointment }) => {
-              this.records.unshift(createdAppointment.data)
+            .then(({ data: { data: createdAppointment } }) => {
+              this.records.unshift(createdAppointment)
               this.$buefy.toast.open({
                 duration: 3000,
                 message: 'Agendamento criado!',

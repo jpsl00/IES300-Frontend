@@ -4,8 +4,10 @@
       <div class="column is-12">
         <nav class="level is-mobile">
           <div class="level-left">
-            <div class="level-item"></div>
-            <p class="subtitle is-5">Agendamento ID {{ record.id }}</p>
+            <div class="level-item">
+              <p class="title is-4">Agendamento</p>
+              <p class="subtitle is-6">(ID {{ record.id }})</p>
+            </div>
           </div>
           <div class="level-right is-hidden-mobile">
             <div class="level-item">
@@ -127,10 +129,10 @@ export default class AppointmentComponent extends Vue {
         isAllowEditing: true,
         isFull: true,
         modalConfig: {
-          title: 'Visualizar Agendamento',
+          title: 'Editar Agendamento',
           button: {
-            text: 'OK',
-            type: 'is-info',
+            text: 'Salvar',
+            type: 'is-success',
           },
         },
         passedData: this.record,

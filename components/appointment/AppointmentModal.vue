@@ -104,7 +104,6 @@
           />
         </b-field>
       </b-field>
-
       <hr v-show="isPartner || isFull" />
       <b-field v-show="isPartner || isFull" grouped group-multiline>
         <b-field expanded>
@@ -159,12 +158,12 @@
           <InputWithValidation
             :rules="isEmployee && isAllowEditing ? 'required' : ''"
             type="text"
-            label="Parceiros"
+            label="Especialistas"
             vid="partners"
           >
             <template slot="input">
               <b-taginput
-                v-model="data.medical.recommendations"
+                v-model="recommendations"
                 :allow-new="false"
                 autocomplete
                 allow-duplicates
@@ -291,7 +290,7 @@ export default class NewAppointmentModalComponent extends Vue {
       pulse: '',
       language: '',
       dosha: [],
-      recommendations: [],
+      recommendations: [''],
     },
     complaint: {
       text: '',
@@ -300,6 +299,7 @@ export default class NewAppointmentModalComponent extends Vue {
   }
 
   public partners = []
+  public recommendations: string[] = []
 
   public isSubmitted = false
 
@@ -312,9 +312,10 @@ export default class NewAppointmentModalComponent extends Vue {
   @Prop(Object) readonly modalConfig!: IAppointmentModalConfig
 
   async fetch() {
-    if (this.isAllowEditing && this.isEmployee) {
-      this.partners = (await $axios.$get('/partner/')).data
-    }
+    this.partners = (await $axios.$get('/partner/')).data
+    this.recommendations = this.data.medical.recommendations?.map((v) =>
+      this.partners.find((va: any) => `${va.id}` === v)
+    ) as any[]
   }
 
   mounted() {
@@ -329,6 +330,9 @@ export default class NewAppointmentModalComponent extends Vue {
 
   onSubmit() {
     this.isSubmitted = true
+    this.data.medical.recommendations = [
+      ...this.recommendations.map((v: any) => `${v.id}`),
+    ]
     const data = this.data
     this.$emit('success', data, this)
   }

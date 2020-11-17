@@ -49,12 +49,13 @@ export default class DefaultLayout extends Vue {
 
   async checkToken() {
     try {
-      await $axios.$post('/auth/check')
-      this.$store.commit('authentication/authSuccess', {
-        token: this.token,
-        user: this.user,
-      })
-      // if (res.status === 401) this.$store.dispatch('authentication/logout')
+      if (this.token) {
+        const data = await $axios.$post('/auth/check')
+        this.$store.commit('authentication/authSuccess', {
+          ...data.data,
+        })
+        // if (res.status === 401) this.$store.dispatch('authentication/logout')
+      }
     } catch (e) {
       this.$store.dispatch('authentication/logout')
     }
