@@ -97,7 +97,7 @@
           <b-input
             type="number"
             field-expanded
-            :value="userAge"
+            :value="data.personal.age"
             disabled
             icon="birthday-cake"
             :loading="isSubmitted"
