@@ -76,6 +76,10 @@ export default class Appointments extends Vue {
 
   fetchOnServer = false
 
+  mounted() {
+    if (!(this.records?.length > 0)) this.$fetch()
+  }
+
   newRecord() {
     this.$buefy.modal.open({
       parent: this,
