@@ -74,6 +74,8 @@ export default class Appointments extends Vue {
     this.records = await $axios.$get(`/pre-appointment/`)
   }
 
+  fetchOnServer = false
+
   newRecord() {
     this.$buefy.modal.open({
       parent: this,
