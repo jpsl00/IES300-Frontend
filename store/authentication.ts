@@ -7,6 +7,14 @@ import {
 import { $axios } from '~/utils/api'
 import * as b64 from '~/utils/b64-helper'
 
+export enum EAuthenticationPermissionLevel {
+  'Invalid' = -1,
+  'User' = 0,
+  'Partner' = 1,
+  'Employee' = 2,
+  'Admin' = 10,
+}
+
 @Module({
   name: 'authentication',
   stateFactory: true,
@@ -17,6 +25,7 @@ export default class Authorization extends VuexModule {
   public status: string | null = null
   public token: string | null = null
   public user: IAuthenticationUser | null = null
+  public authenticated: boolean = false
 
   // Actions
   @VuexAction
@@ -34,7 +43,6 @@ export default class Authorization extends VuexModule {
         user: IAuthenticationUser
       } = await $axios.$post('/auth/login', { data: encodedData })
       const { token, user } = resp
-      $axios.defaults.headers.common.authorization = token
       await this.context.commit('authSuccess', { token, user })
     } catch (err) {
       this.context.commit('authError')
@@ -44,43 +52,71 @@ export default class Authorization extends VuexModule {
   @VuexAction
   logout() {
     this.context.commit('authLogout')
-    delete $axios.defaults.headers.common.authorization
   }
 
   // Mutations
   @VuexMutation
   authRequest() {
     this.status = 'loading'
+    this.authenticated = false
   }
 
   @VuexMutation
   authSuccess({ token, user }: { token: string; user: IAuthenticationUser }) {
+    $axios.defaults.headers.common.authorization = token
     this.status = 'success'
     this.token = token
     this.user = user
+    this.authenticated = true
   }
 
   @VuexMutation
   authError() {
+    delete $axios.defaults.headers.common.authorization
     this.status = 'error'
     this.token = null
     this.user = null
+    this.authenticated = false
   }
 
   @VuexMutation
   authLogout() {
+    delete $axios.defaults.headers.common.authorization
     this.status = 'loggedOut'
     this.status = null
     this.token = null
+    this.authenticated = false
   }
 
   // Getters
-  get isLoggedIn() {
-    return !!this.token
+  get isLoggedIn(): boolean {
+    return this.authenticated && !!this.token
   }
 
   get authStatus() {
     return this.status
+  }
+
+  get role() {
+    return (this.authenticated
+      ? this.user?.role
+      : -1) as EAuthenticationPermissionLevel
+  }
+
+  get isClient(): boolean {
+    return this.isLoggedIn && this.role === EAuthenticationPermissionLevel.User
+  }
+
+  get isPartner(): boolean {
+    return (
+      this.isLoggedIn && this.role === EAuthenticationPermissionLevel.Partner
+    )
+  }
+
+  get isEmployee(): boolean {
+    return (
+      this.isLoggedIn && this.role >= EAuthenticationPermissionLevel.Employee
+    )
   }
 }
 
@@ -92,6 +128,9 @@ export interface IAuthenticationLoginUser {
 
 export interface IAuthenticationUser {
   id: number
+  username: string
+  email: string
   name: string
   role: number
+  birthdate: string
 }

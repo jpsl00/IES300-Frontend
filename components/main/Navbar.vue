@@ -12,7 +12,7 @@
       <b-navbar-item
         tag="router-link"
         :to="{ path: '/' }"
-        :active="this.$route.path === '/'"
+        :active="this.$route.name === 'index'"
       >
         Home
       </b-navbar-item>
@@ -20,7 +20,7 @@
       <b-navbar-dropdown label="Serviços" hoverable boxed collapsible>
         <b-navbar-item
           tag="router-link"
-          :to="{ path: '/serviços/agendamento' }"
+          :to="{ path: '/servicos/agendamento' }"
         >
           Agendamento
         </b-navbar-item>
@@ -29,17 +29,15 @@
     </template>
     <template v-if="!isLoggedIn" slot="end">
       <b-navbar-item tag="div">
-        <div class="buttons">
-          <b-button
-            type="is-primary"
-            icon-left="sign-in-alt"
-            tag="router-link"
-            to="/login"
-            :disabled="this.$route.path === '/login'"
-          >
-            Entrar
-          </b-button>
-        </div>
+        <b-button
+          type="is-primary"
+          icon-left="sign-in-alt"
+          tag="router-link"
+          to="/login"
+          :disabled="this.$route.name === 'login'"
+        >
+          Entrar
+        </b-button>
       </b-navbar-item>
     </template>
     <template v-else slot="end">
@@ -51,7 +49,7 @@
           <b-button
             type="is-danger"
             icon-left="sign-out-alt"
-            :disabled="this.$route.path === '/login'"
+            :disabled="this.$route.name === 'login'"
             @click="logout"
           >
             Sair
@@ -78,7 +76,7 @@ export default class Navbar extends Vue {
   private user!: IAuthenticationUser
 
   get shouldShow() {
-    return this.$route.path !== '/login'
+    return this.$route.name !== 'login'
   }
 
   logout() {

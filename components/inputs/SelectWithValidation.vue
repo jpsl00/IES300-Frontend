@@ -2,7 +2,7 @@
   <ValidationProvider
     v-slot="{ errors, valid }"
     :vid="vid"
-    :name="$attrs.name || $attrs.label"
+    :name="$attrs.label"
     :rules="rules"
     slim
   >
@@ -12,14 +12,14 @@
       :message="errors"
       :expanded="$attrs['field-expanded']"
     >
-      <slot name="input">
-        <b-input
-          v-model="innerValue"
-          :expanded="$attrs['input-expanded']"
-          v-bind.sync="$attrs"
-        />
-      </slot>
-      <slot name="addon" />
+      <b-select
+        v-model="innerValue"
+        :expanded="$attrs['input-expanded']"
+        placeholder="Select a subject"
+        :disabled="$attrs['input-disabled']"
+      >
+        <slot />
+      </b-select>
     </b-field>
   </ValidationProvider>
 </template>
@@ -40,7 +40,7 @@ import { ValidationProvider } from 'vee-validate'
     ValidationProvider,
   },
 })
-export default class InputWithValidation extends Vue {
+export default class SelectWithValidation extends Vue {
   public innerValue = ''
 
   @Prop(String) readonly vid: string | undefined

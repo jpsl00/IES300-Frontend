@@ -15,7 +15,13 @@
       "~/*": ["./*"],
       "@/*": ["./*"]
     },
-    "types": ["@types/node", "@nuxt/types", "@nuxtjs/axios", "buefy/types"],
+    "types": [
+      "@types/node",
+      "@nuxt/types",
+      "@nuxtjs/axios",
+      "buefy/types",
+      "@nuxt/vue-app"
+    ],
     "resolveJsonModule": true
   },
   "exclude": ["node_modules", ".nuxt", "dist"]

@@ -119,6 +119,9 @@ export default class Login extends Vue {
   @authentication.Getter
   private authStatus!: string
 
+  @authentication.Getter
+  private isLoggedIn!: boolean
+
   get isLoggingIn() {
     return this.authStatus === 'loading'
   }
@@ -159,27 +162,27 @@ export default class Login extends Vue {
       if (this.timeoutId) clearTimeout(this.timeoutId)
       this.$buefy.toast.open({
         duration: 3000,
-        message: 'Usuário/Senha incorretos',
+        message: 'Usuário/Senha incorretos!',
         type: 'is-danger',
         position: 'is-bottom-right',
         queue: false,
       })
       this.isSubmitted = false
-    } else if (status === 'success') {
+    } else if (status === 'success' && this.isLoggedIn) {
       if (this.timeoutId) clearTimeout(this.timeoutId)
       this.$buefy.toast.open({
         duration: 3000,
-        message: 'Logado com sucesso, redirecionando em 3 segundos...',
+        message: 'Logado com sucesso!',
         type: 'is-success',
         position: 'is-bottom-right',
         queue: false,
       })
-      setTimeout(() => this.$router.push('/'), 4000)
+      this.$router.push('/')
     }
   }
 
   created() {
-    if (this.authStatus === 'success') this.$router.go(-1)
+    if (this.isLoggedIn) this.$router.go(-1)
   }
 }
 </script>
