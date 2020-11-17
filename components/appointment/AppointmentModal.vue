@@ -332,12 +332,23 @@ export default class NewAppointmentModalComponent extends Vue {
   }
 
   onSubmit() {
-    this.isSubmitted = true
-    this.data.medical.recommendations = [
-      ...this.recommendations.map((v: any) => (v ? `${v.id}` : '')),
-    ]
-    const data = this.data
-    this.$emit('success', data, this)
+    try {
+      this.isSubmitted = true
+      this.data.medical.recommendations = [
+        ...this.recommendations.map((v: any) => (v ? `${v.id}` : '')),
+      ]
+      const data = this.data
+      this.$emit('success', data, this)
+    } catch (e) {
+      this.$buefy.toast.open({
+        duration: 3000,
+        message: 'Houve um erro inesperado, por favor tente novamente',
+        type: 'is-warning',
+        position: 'is-bottom-right',
+        queue: false,
+      })
+      this.isSubmitted = false
+    }
   }
   /*
   onResetForm() {
