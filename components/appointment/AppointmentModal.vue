@@ -323,6 +323,7 @@ export default class NewAppointmentModalComponent extends Vue {
   mounted() {
     this.data = { ...this.data, ...this.passedData }
 
+    if (!(this.partners?.length > 0)) this.$fetch()
     if (!this.data.personal.client) this.data.personal.client = this.user.id
     if (!this.data.personal.name) this.data.personal.name = this.user.name
     if (!this.data.personal.email) this.data.personal.email = this.user.email
