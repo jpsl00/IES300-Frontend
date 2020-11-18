@@ -264,17 +264,13 @@ const authentication = namespace('authentication')
   },
 })
 export default class NewAppointmentModalComponent extends Vue {
-  $refs!: {
-    observer: InstanceType<typeof ValidationObserver>
-  }
-
   @authentication.State
   private user!: IAuthenticationUser
 
   @authentication.Getter
   private role!: EAuthenticationPermissionLevel
 
-  public data = {
+  public data: IAppointmentModalData = {
     id: 0,
     personal: {
       client: 0,
@@ -418,7 +414,7 @@ export interface IAppointmentModalData {
   medical: {
     pulse: string
     language: string
-    dosha: string
+    dosha: string[]
     recommendations: string[]
   }
   complaint: {

@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-    <div class="columns is-multiline">
+    <div class="columns is-multiline is-centered">
       <div class="column is-12">
         <nav class="level is-mobile">
           <div class="level-left">
@@ -24,6 +24,14 @@
                   Editar
                 </b-button>
                 <b-button
+                  v-show="isClient && currentStep === 2"
+                  type="is-success"
+                  icon-left="calendar-plus"
+                  @click="schedule"
+                >
+                  Marcar Consultas
+                </b-button>
+                <b-button
                   type="is-danger"
                   icon-left="ban"
                   @click="deleteRecord"
@@ -34,6 +42,21 @@
             </div>
           </div>
         </nav>
+      </div>
+      <div class="column is-10 is-8-widescreen is-12-mobile">
+        <b-steps
+          v-model="currentStep"
+          rounded
+          animated
+          mobile-mode="compact"
+          :has-navigation="false"
+        >
+          <b-step-item step="0" label="Criar Agendamento" />
+          <b-step-item step="1" label="Análise do Profissional" />
+          <b-step-item step="2" label="Marcação de Consultas" />
+          <b-step-item step="3" label="Consultas" />
+          <b-step-item step="4" label="Concluído" />
+        </b-steps>
       </div>
     </div>
     <div>
@@ -67,6 +90,7 @@ import { Component, Vue, Prop, namespace } from 'nuxt-property-decorator'
 import AppointmentModalComponent, {
   IAppointmentModalData,
 } from '@/components/appointment/AppointmentModal.vue'
+import SchedulingModalComponent from '@/components/appointment/SchedulingModal.vue'
 import { $axios } from '~/utils/api'
 
 const authentication = namespace('authentication')
@@ -88,6 +112,9 @@ export default class AppointmentComponent extends Vue {
 
   @authentication.Getter
   readonly isEmployee!: boolean
+
+  @authentication.Getter
+  readonly isClient!: boolean
 
   viewRecord() {
     this.$buefy.modal.open({
@@ -182,6 +209,49 @@ export default class AppointmentComponent extends Vue {
         })
       },
     })
+  }
+
+  schedule() {
+    this.$buefy.modal.open({
+      parent: this,
+      component: SchedulingModalComponent,
+      trapFocus: true,
+      hasModalCard: true,
+      canCancel: false,
+      fullScreen: true,
+      props: {
+        isAllowEditing: false,
+        isFull: true,
+        appointment: this.record,
+        modalConfig: {
+          title: 'Marcar Consultas',
+          button: {
+            text: 'Salvar',
+            type: 'is-success',
+          },
+        },
+        passedData: this.record,
+      },
+      events: {
+        success: (_: IAppointmentModalData, modal: Vue) => {
+          modal.$emit('close')
+        },
+      },
+    })
+  }
+
+  get currentStep() {
+    if (
+      !this.record.medical.recommendations ||
+      !(this.record.medical?.recommendations.length > 0)
+    )
+      return 1
+    else if (
+      !this.record.appointments ||
+      !(this.record.appointments!.length > 0)
+    )
+      return 2
+    else return 3
   }
 }
 </script>
