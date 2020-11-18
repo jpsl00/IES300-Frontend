@@ -32,6 +32,7 @@
                   Marcar Consultas
                 </b-button>
                 <b-button
+                  v-show="!record.appointments || !record.appointments.length"
                   type="is-danger"
                   icon-left="ban"
                   @click="deleteRecord"
@@ -58,27 +59,81 @@
           <b-step-item step="4" label="Concluído" />
         </b-steps>
       </div>
-    </div>
-    <div>
-      <div class="control">
-        <textarea
-          class="textarea has-fixed-size is-borderless is-unselectable"
-          :value="record.complaint.text"
-          readonly
-        />
+      <div class="column is-12">
+        <div class="control">
+          <textarea
+            class="textarea has-fixed-size is-borderless is-unselectable"
+            :value="record.complaint.text"
+            readonly
+          />
+        </div>
       </div>
-    </div>
-    <div
-      v-show="record && record.appointments && record.appointments.length"
-      class="tile is-ancestor"
-    >
-      <div class="tile is-parent is-vertical is-12">
+      <div class="column is-12">
         <div
-          v-for="(appointment, idx) in record.appointments"
-          :key="appointment.id"
-          class="tile is-child is-vertical is-12 notification is-primary"
+          v-show="record && record.appointments && record.appointments.length"
+          class="columns is-multiline is-variable is-3"
         >
-          <div class="">{{ idx }}</div>
+          <div
+            v-for="(appointment, idx) in record.appointments"
+            :key="idx"
+            class="column is-6 is-12-mobile is-6-widescreen is-4-fullhd"
+          >
+            <div
+              class="notification is-info"
+              :class="{
+                'is-primary': !!appointment.completedAt,
+              }"
+            >
+              <nav class="level is-mobile">
+                <div class="level-left">
+                  <div class="level-item">
+                    <p class="title is-4">Consulta {{ idx + 1 }}</p>
+                    <p class="subtitle is-6">(ID: {{ appointment.id }})</p>
+                  </div>
+                </div>
+                <div class="level-right">
+                  <div class="level-item">
+                    <p class="subtitle is-5">
+                      {{
+                        new Date(appointment.date).toLocaleString('pt-BR', {
+                          year: 'numeric',
+                          month: '2-digit',
+                          day: '2-digit',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })
+                      }}
+                    </p>
+                  </div>
+                </div>
+              </nav>
+              <div class="content">
+                <p>
+                  <span class="has-text-weight-semibold">Médico: </span>
+                  {{ appointment.partner.name }}
+                  <br />
+                  <span v-show="!!appointment.partner.specialty">
+                    <span class="has-text-weight-semibold"
+                      >Especialidade:
+                    </span>
+                    {{ appointment.partner.specialty }}
+                    <br />
+                  </span>
+                  <span v-show="!!appointment.partner.address">
+                    <span class="has-text-weight-semibold">Endereço: </span>
+                    {{ appointment.partner.address }}
+                    <br />
+                  </span>
+                </p>
+                <textarea
+                  v-show="appointment.comment"
+                  class="textarea has-fixed-size is-borderless is-unselectable"
+                  :value="appointment.comment"
+                  readonly
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -233,8 +288,31 @@ export default class AppointmentComponent extends Vue {
         passedData: this.record,
       },
       events: {
-        success: (_: IAppointmentModalData, modal: Vue) => {
-          modal.$emit('close')
+        success: (data: any, modal: Vue) => {
+          $axios
+            .$post(`/appointment/`, data)
+            .then(({ data }) => {
+              console.log(data)
+              this.record.appointments = data
+              this.$buefy.toast.open({
+                message: 'Consultas marcadas!',
+                type: 'is-success',
+                position: 'is-bottom-right',
+                duration: 3000,
+              })
+              modal.$emit('close')
+            })
+            .catch(() => {
+              this.$buefy.toast.open({
+                duration: 3000,
+                message: 'Houve um erro inesperado, por favor tente novamente',
+                type: 'is-warning',
+                position: 'is-bottom-right',
+                queue: false,
+              })
+              ;(modal as any).isSubmitted = false
+            })
+          console.log(data)
         },
       },
     })
@@ -257,7 +335,11 @@ export default class AppointmentComponent extends Vue {
 </script>
 
 <style scoped>
-.level {
+/* .level {
   margin-bottom: 0px;
+} */
+
+.notification {
+  padding-right: 24px !important;
 }
 </style>
