@@ -190,7 +190,10 @@ export default class SchedulingModalComponent extends Vue {
 
   unselectableTimes(schedule: Schedule, index: number) {
     try {
-      const allSchedules = [...schedule.appointments, ...this.createdSchedules]
+      const allSchedules = [
+        ...schedule.appointments,
+        ...this.createdSchedules.map((v: any) => v.date),
+      ]
 
       // eslint-disable-next-line prefer-const
       let when = new Date(this.createdSchedules[index]?.tempdate?.getTime())
@@ -198,9 +201,9 @@ export default class SchedulingModalComponent extends Vue {
       if (!when) return []
 
       const unselectable = allSchedules
-        .filter((v: any) => v && v.date)
-        .filter((v: any) => {
-          const value: Date = new Date(v?.date?.getTime())
+        .filter((v) => !!v)
+        .filter((v: Date) => {
+          const value: Date = new Date(v.getTime())
           if (value) value.setHours(0, 0, 0, 0)
 
           return value.valueOf() === when.valueOf()

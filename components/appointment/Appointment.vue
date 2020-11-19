@@ -68,11 +68,11 @@
           />
         </div>
       </div>
-      <div class="column is-12">
-        <div
-          v-show="record && record.appointments && record.appointments.length"
-          class="columns is-multiline is-variable is-3"
-        >
+      <div
+        v-show="record && record.appointments && record.appointments.length"
+        class="column is-12"
+      >
+        <div class="columns is-multiline is-variable is-3">
           <div
             v-for="(appointment, idx) in record.appointments"
             :key="idx"
@@ -135,6 +135,43 @@
             </div>
           </div>
         </div>
+      </div>
+      <div class="column is-12 is-hidden-tablet">
+        <nav class="level is-mobile">
+          <div class="level-right">
+            <div class="level-item">
+              <p class="buttons">
+                <b-button type="is-info" icon-left="info" @click="viewRecord">
+                  Visualizar
+                </b-button>
+                <b-button
+                  v-show="isEmployee"
+                  type="is-primary"
+                  icon-left="edit"
+                  @click="editRecord"
+                >
+                  Editar
+                </b-button>
+                <b-button
+                  v-show="isClient && currentStep === 2"
+                  type="is-success"
+                  icon-left="calendar-plus"
+                  @click="schedule"
+                >
+                  Marcar Consultas
+                </b-button>
+                <b-button
+                  v-show="!record.appointments || !record.appointments.length"
+                  type="is-danger"
+                  icon-left="ban"
+                  @click="deleteRecord"
+                >
+                  Cancelar
+                </b-button>
+              </p>
+            </div>
+          </div>
+        </nav>
       </div>
     </div>
   </div>
