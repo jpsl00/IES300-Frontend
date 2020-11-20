@@ -233,7 +233,7 @@ export default class SchedulingModalComponent extends Vue {
       if (found) {
         const hour = type ? found.end : found.start
         const newDate = new Date()
-        newDate.setHours(type ? hour : hour - 1)
+        newDate.setHours(hour, 0, 0, 0)
         return newDate
       }
     }
