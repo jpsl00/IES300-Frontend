@@ -359,7 +359,8 @@ export default class AppointmentComponent extends Vue {
       !(this.record.appointments!.length > 0)
     )
       return 2
-    else return 3
+    else if (!this.record.appointments.every((v) => v.completedAt)) return 3
+    else return 4
   }
 }
 </script>

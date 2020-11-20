@@ -207,8 +207,13 @@ export default class Schedulings extends Vue {
                 queue: false,
               })
 
+              savedSchedule = {
+                ...savedSchedule,
+                date: new Date(savedSchedule.date),
+                completedAt: new Date(savedSchedule.completedAt),
+              }
               const idx = this.records.findIndex((v) => v.id === id)
-              this.records[idx] = savedSchedule
+              this.records.splice(idx, 1, savedSchedule)
 
               setTimeout(() => modal.$emit('close'), 2500)
             })
