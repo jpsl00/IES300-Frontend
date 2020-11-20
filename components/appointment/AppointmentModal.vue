@@ -329,6 +329,7 @@ export default class NewAppointmentModalComponent extends Vue {
 
   onSubmit() {
     try {
+      if (!this.isAllowEditing) return this.$emit('success', null, this)
       this.isSubmitted = true
       this.data.medical.recommendations = [
         ...this.recommendations.map((v: any) => (v ? `${v.id}` : '')),
