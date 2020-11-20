@@ -323,8 +323,8 @@ export default class AppointmentComponent extends Vue {
         success: (data: any, modal: Vue) => {
           $axios
             .$post(`/appointment/`, data)
-            .then(({ data }) => {
-              this.record.appointments = data
+            .then((response) => {
+              this.record.appointments = response
               this.$buefy.toast.open({
                 message: 'Consultas marcadas!',
                 type: 'is-success',
