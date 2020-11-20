@@ -229,7 +229,7 @@ export default class Schedulings extends Vue {
 
   get paginatedRecords() {
     return this.records.filter((v) => {
-      const date = new Date((v.date as Date).getTime())
+      const date = new Date(v.date)
       date.setHours(0, 0, 0, 0)
 
       return date.getTime() === this.date.getTime()
