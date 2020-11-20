@@ -49,7 +49,7 @@
           v-model="currentStep"
           rounded
           animated
-          mobile-mode="compact"
+          mobile-mode="minimalist"
           :has-navigation="false"
         >
           <b-step-item step="0" label="Criar Agendamento" />
@@ -76,7 +76,7 @@
           <div
             v-for="(appointment, idx) in record.appointments"
             :key="idx"
-            class="column is-6 is-12-mobile is-6-widescreen is-4-fullhd"
+            class="column is-6 is-12-mobile is-6-widescreen"
           >
             <div
               class="notification is-info"
@@ -329,7 +329,6 @@ export default class AppointmentComponent extends Vue {
           $axios
             .$post(`/appointment/`, data)
             .then(({ data }) => {
-              console.log(data)
               this.record.appointments = data
               this.$buefy.toast.open({
                 message: 'Consultas marcadas!',
@@ -349,7 +348,6 @@ export default class AppointmentComponent extends Vue {
               })
               ;(modal as any).isSubmitted = false
             })
-          console.log(data)
         },
       },
     })

@@ -1,43 +1,49 @@
 <template>
   <section class="section has-inset-shadow">
-    <div class="columns is-centered is-vcentered is-multiline">
-      <div class="column is-10-desktop is-12-touch">
-        <div class="box">
-          <nav class="level">
-            <div class="level-left">
-              <div class="level-item">
-                <p class="title is-3">Agendamentos</p>
+    <div class="container">
+      <div class="columns is-centered is-vcentered is-multiline">
+        <div class="column is-10-desktop is-12-touch">
+          <div class="box">
+            <nav class="level">
+              <div class="level-left">
+                <div class="level-item">
+                  <p class="title is-3">Agendamentos</p>
+                </div>
               </div>
-            </div>
-            <div v-show="isClient" class="level-right">
-              <div class="level-item">
-                <b-button type="is-warning" icon-left="plus" @click="newRecord">
-                  Novo
-                </b-button>
+              <div v-show="isClient" class="level-right">
+                <div class="level-item">
+                  <b-button
+                    type="is-warning"
+                    icon-left="plus"
+                    @click="newRecord"
+                  >
+                    Novo
+                  </b-button>
+                </div>
               </div>
-            </div>
-          </nav>
+            </nav>
+          </div>
         </div>
-      </div>
-      <div class="column is-10-desktop is-12-touch">
-        <appointment-component
-          v-for="(record, idx) in paginatedRecords"
-          :key="record.id"
-          :record="record"
-          :array="paginatedRecords"
-          :index="idx"
-          @delete:record="onDeleteRecord"
-          @update:record="onUpdateRecord"
-        />
-      </div>
-      <div class="column is-10-desktop is-12-touch">
-        <div class="box">
-          <b-pagination
-            v-model="current"
-            :total="total"
-            :per-page="perPage"
-            @change="onPageChange"
+        <div class="column is-10-desktop is-12-touch">
+          <appointment-component
+            v-for="(record, idx) in paginatedRecords"
+            :key="record.id"
+            :record="record"
+            :array="paginatedRecords"
+            :index="idx"
+            @delete:record="onDeleteRecord"
+            @update:record="onUpdateRecord"
           />
+        </div>
+        <div class="column is-10-desktop is-12-touch">
+          <div class="box">
+            <b-pagination
+              v-model="current"
+              :total="total"
+              :per-page="perPage"
+              @change="onPageChange"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -70,6 +76,9 @@ export default class Appointments extends Vue {
   @authentication.Getter
   private readonly isClient!: boolean
 
+  @authentication.Getter
+  private readonly isPartner!: boolean
+
   async fetch() {
     this.records = await $axios.$get(`/pre-appointment/`)
   }
@@ -77,6 +86,8 @@ export default class Appointments extends Vue {
   fetchOnServer = false
 
   mounted() {
+    if (this.isPartner) return this.$router.push('/parceiros/consultas')
+
     if (!(this.records?.length > 0)) this.$fetch()
   }
 
