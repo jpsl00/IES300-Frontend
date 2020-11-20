@@ -1883,18 +1883,18 @@
   dependencies:
     tslib "^2.0.1"
 
-"@vueuse/core@^4.0.0-beta.40":
-  version "4.0.0-beta.40"
-  resolved "https://registry.yarnpkg.com/@vueuse/core/-/core-4.0.0-beta.40.tgz#7efdc15c1b994647dff7ae65c0ca573d96ce9b28"
-  integrity sha512-FOTOUrXAAp0NOmy8hMlP1HpUhnB8LeRJZDOEUl/A9gKMDwWvPTEvxKsDAIzSa4s7I0MapVzfeP3soNCNfl9+vQ==
+"@vueuse/core@^4.0.0-rc.3":
+  version "4.0.0-rc.3"
+  resolved "https://registry.yarnpkg.com/@vueuse/core/-/core-4.0.0-rc.3.tgz#5381ca657e10df596cd7027fc5c96b2d4b3a090c"
+  integrity sha512-dQ/FZgo0z7kBFOvDWxuzaUrmuO8X1AlQk17e3PU1TVtG2Uu+mCvjPNbuvI2fjhTjl5rzPJawwoU2WZFj+nlFvw==
   dependencies:
-    "@vueuse/shared" "4.0.0-beta.40"
+    "@vueuse/shared" "4.0.0-rc.3"
     vue-demi latest
 
-"@vueuse/shared@4.0.0-beta.40":
-  version "4.0.0-beta.40"
-  resolved "https://registry.yarnpkg.com/@vueuse/shared/-/shared-4.0.0-beta.40.tgz#76e9b52228159e7ec88df2c8f4eea8fce1a42ec3"
-  integrity sha512-Ay71viUTXs0XX2hQ04kEExhpsCrw3KankBMP7euorsPjuQmIZjUA4NNOb45UAudg+uF5HXLpgWLvwb4cMOLHnQ==
+"@vueuse/shared@4.0.0-rc.3":
+  version "4.0.0-rc.3"
+  resolved "https://registry.yarnpkg.com/@vueuse/shared/-/shared-4.0.0-rc.3.tgz#42fb56fed3779f3b8a17a82c16a364bad20d01b7"
+  integrity sha512-VY0x/XxpeTMHp/0FDiv1cgUUxkJGQl7liiM2AjR/J7+Ys/2Y2dijD5cAKViq9FGUPQQsOcLptMvMvUsDMoN4DA==
   dependencies:
     vue-demi latest
 
