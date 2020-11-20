@@ -73,7 +73,6 @@
             </b-field>
           </b-field>
           <hr />
-          ,
         </div>
       </template>
     </section>
@@ -209,7 +208,7 @@ export default class SchedulingModalComponent extends Vue {
           return value.valueOf() === when.valueOf()
           /* v.date?.getDate() === when */
         })
-        ?.map((v: any) => v?.date)
+        ?.map((v: any) => new Date(v))
       /*
       const created = [...this.createdSchedules]
       created.splice(index, 1)
