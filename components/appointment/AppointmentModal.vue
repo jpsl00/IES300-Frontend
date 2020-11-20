@@ -171,7 +171,7 @@
                 :data="partners"
                 field="field"
                 icon="user-md"
-                :loading="isSubmitted"
+                :loading="isSubmitted || $fetchState.pending"
                 :disabled="!isAllowEditing || !isEmployee || isSubmitted"
                 expanded
                 type="is-primary"

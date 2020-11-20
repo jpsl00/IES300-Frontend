@@ -78,12 +78,7 @@
             :key="idx"
             class="column is-6 is-12-mobile is-6-widescreen"
           >
-            <div
-              class="notification is-info"
-              :class="{
-                'is-primary': !!appointment.completedAt,
-              }"
-            >
+            <div class="notification is-info" :class="appointment.type">
               <nav class="level is-mobile">
                 <div class="level-left">
                   <div class="level-item">

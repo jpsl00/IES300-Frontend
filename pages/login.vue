@@ -14,16 +14,34 @@
                       <tr>
                         <th>Usuário</th>
                         <th>Senha</th>
+                        <th>Cargo</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr>
                         <td>cliente1</td>
                         <td>123456</td>
+                        <td>Cliente</td>
                       </tr>
                       <tr>
                         <td>cliente2</td>
                         <td>123456</td>
+                        <td>Cliente</td>
+                      </tr>
+                      <tr>
+                        <td>funcionário</td>
+                        <td>123456</td>
+                        <td>Funcionário</td>
+                      </tr>
+                      <tr>
+                        <td>médico1</td>
+                        <td>123456</td>
+                        <td>Parceiro</td>
+                      </tr>
+                      <tr>
+                        <td>médico2</td>
+                        <td>123456</td>
+                        <td>Parceiro</td>
                       </tr>
                     </tbody>
                   </table>

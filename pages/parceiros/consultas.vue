@@ -30,6 +30,14 @@
             </div>
             <div class="column is-7">
               <div class="box">
+                <div
+                  v-if="!paginatedRecords || !paginatedRecords.length"
+                  class="content has-text-centered"
+                >
+                  <h5 class="subtitle is-5 has-text-weight-semibold">
+                    Não há agendamentos para esta data
+                  </h5>
+                </div>
                 <div class="columns is-multiline is-variable">
                   <div
                     v-for="(appointment, idx) in paginatedRecords"
@@ -63,11 +71,29 @@
                         </div>
                       </nav>
                       <div class="content">
-                        <p class="mb-0">
+                        <p :class="{ 'mb-0': !appointment.comment }">
                           <span class="has-text-weight-semibold">
                             Paciente:
                           </span>
                           {{ appointment.client.name }}
+                          <template v-if="appointment.completedAt">
+                            <br />
+                            <span class="has-text-weight-semibold">
+                              Conclusão:
+                            </span>
+                            {{
+                              new Date(appointment.completedAt).toLocaleString(
+                                'pt-BR',
+                                {
+                                  year: 'numeric',
+                                  month: '2-digit',
+                                  day: '2-digit',
+                                  hour: '2-digit',
+                                  minute: '2-digit',
+                                }
+                              )
+                            }}
+                          </template>
                         </p>
                         <textarea
                           v-show="appointment.comment"
@@ -75,6 +101,13 @@
                           :value="appointment.comment"
                           readonly
                         />
+                      </div>
+                      <div v-if="!appointment.completedAt">
+                        <p class="control">
+                          <b-button @click="onClickConclude(appointment.id)">
+                            Marcar Concluído
+                          </b-button>
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -91,9 +124,7 @@
 <script lang="ts">
 import { Component, Vue, namespace } from 'nuxt-property-decorator'
 import AppointmentComponent from '@/components/appointment/Appointment.vue'
-import AppointmentModalComponent, {
-  IAppointmentModalData,
-} from '@/components/appointment/AppointmentModal.vue'
+import ConcludeSchedulingModalComponent from '@/components/appointment/ConcludeSchedulingModal.vue'
 import { $axios } from '~/utils/api'
 
 const authentication = namespace('authentication')
@@ -143,6 +174,59 @@ export default class Schedulings extends Vue {
     /* if (!(this.records?.length > 0)) this.$fetch() */
   }
 
+  onClickConclude(id: Number) {
+    this.$buefy.modal.open({
+      parent: this,
+      component: ConcludeSchedulingModalComponent,
+      trapFocus: true,
+      hasModalCard: true,
+      canCancel: false,
+      fullScreen: true,
+      props: {
+        isAllowEditing: true,
+        modalConfig: {
+          title: 'Concluir Consulta',
+          button: {
+            text: 'Concluir',
+            type: 'is-success',
+          },
+        },
+      },
+      events: {
+        success: (comment: string, modal: Vue) => {
+          return $axios
+            .post(`/appointment/${id}/conclude`, {
+              comment,
+            })
+            .then(({ data: { data: savedSchedule } }) => {
+              this.$buefy.toast.open({
+                duration: 3000,
+                message: 'Consulta concluída!',
+                type: 'is-success',
+                position: 'is-bottom-right',
+                queue: false,
+              })
+
+              const idx = this.records.findIndex((v) => v.id === id)
+              this.records[idx] = savedSchedule
+
+              setTimeout(() => modal.$emit('close'), 2500)
+            })
+            .catch(() => {
+              this.$buefy.toast.open({
+                duration: 3000,
+                message: 'Houve um erro inesperado, por favor tente novamente',
+                type: 'is-warning',
+                position: 'is-bottom-right',
+                queue: false,
+              })
+              ;(modal as any).isSubmitted = false
+            })
+        },
+      },
+    })
+  }
+
   get paginatedRecords() {
     return this.records.filter((v) => {
       const date = new Date((v.date as Date).getTime())
@@ -157,5 +241,9 @@ export default class Schedulings extends Vue {
 <style scoped>
 .max-width-333 {
   max-width: 333px;
+}
+
+.notification {
+  padding-right: 24px !important;
 }
 </style>
