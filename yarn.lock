@@ -1430,10 +1430,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/cleave.js@^1.4.3":
-  version "1.4.3"
-  resolved "https://registry.yarnpkg.com/@types/cleave.js/-/cleave.js-1.4.3.tgz#491d68250ca2f1625f14c7d4ebb8e560e25430de"
-  integrity sha512-6xBdmZIbY72xlCrlPFN2P0NDTMUErNCvfdyWY7oFu3VIrzCwa6/slmQfrZ+FxeoMiL5htXi7wr/sSc5Ycf4lhQ==
+"@types/cleave.js@^1.4.4":
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/@types/cleave.js/-/cleave.js-1.4.4.tgz#66f0ee5218283f2c9623c49074eb3f34333952ac"
+  integrity sha512-uYFjWMPSBGBfbgfPna6yDenevtDSgqfkDXb/3dct6DXHiFs3InI3fpw51wb94zW8kHcNh1MUadboN55RAvSLEw==
   dependencies:
     "@types/react" "*"
 
