@@ -16,7 +16,7 @@
     "@nuxt/typescript-runtime": "^2.0.0",
     "@nuxtjs/axios": "^5.12.2",
     "@nuxtjs/fontawesome": "^1.1.2",
-    "@nuxtjs/pwa": "^3.0.2",
+    "@nuxtjs/pwa": "^3.3.3",
     "core-js": "^3.8.0",
     "fibers": "^5.0.0",
     "node-sass": "^5.0.0",
