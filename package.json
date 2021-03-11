@@ -20,7 +20,7 @@
     "core-js": "^3.8.0",
     "fibers": "^5.0.0",
     "node-sass": "^5.0.0",
-    "nuxt": "^2.14.6",
+    "nuxt": "^2.15.3",
     "nuxt-buefy": "^0.4.3",
     "nuxt-compress": "^4.1.0",
     "nuxt-property-decorator": "^2.8.8",
