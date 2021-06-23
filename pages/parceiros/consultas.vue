@@ -97,15 +97,37 @@
                         </p>
                         <textarea
                           v-show="appointment.comment"
-                          class="textarea has-fixed-size is-borderless is-unselectable"
+                          class="
+                            textarea
+                            has-fixed-size
+                            is-borderless is-unselectable
+                          "
                           :value="appointment.comment"
                           readonly
                         />
                       </div>
                       <div v-if="!appointment.completedAt">
-                        <p class="control">
+                        <p class="buttons">
+                          <b-button
+                            type="is-dark"
+                            icon-left="info"
+                            @click="viewRecord(idx)"
+                          >
+                            Ficha Médica
+                          </b-button>
                           <b-button @click="onClickConclude(appointment.id)">
                             Marcar Concluído
+                          </b-button>
+                        </p>
+                      </div>
+                      <div v-else>
+                        <p class="buttons">
+                          <b-button
+                            type="is-info"
+                            icon-left="info"
+                            @click="viewRecord(idx)"
+                          >
+                            Ficha Médica
                           </b-button>
                         </p>
                       </div>
@@ -124,6 +146,9 @@
 <script lang="ts">
 import { Component, Vue, namespace } from 'nuxt-property-decorator'
 import AppointmentComponent from '@/components/appointment/Appointment.vue'
+import AppointmentModalComponent, {
+  IAppointmentModalData,
+} from '@/components/appointment/AppointmentModal.vue'
 import ConcludeSchedulingModalComponent from '@/components/appointment/ConcludeSchedulingModal.vue'
 import { $axios } from '~/utils/api'
 
@@ -172,6 +197,34 @@ export default class Schedulings extends Vue {
     if (!this.isPartner) return this.$router.push('/servicos/agendamentos')
 
     /* if (!(this.records?.length > 0)) this.$fetch() */
+  }
+
+  viewRecord(idx: number) {
+    this.$buefy.modal.open({
+      parent: this,
+      component: AppointmentModalComponent,
+      trapFocus: true,
+      hasModalCard: true,
+      canCancel: false,
+      fullScreen: true,
+      props: {
+        isAllowEditing: false,
+        isFull: true,
+        modalConfig: {
+          title: 'Visualizar Ficha',
+          button: {
+            text: 'OK',
+            type: 'is-info',
+          },
+        },
+        passedData: this.records[idx].preAppointment,
+      },
+      events: {
+        success: (_: IAppointmentModalData, modal: Vue) => {
+          modal.$emit('close')
+        },
+      },
+    })
   }
 
   onClickConclude(id: Number) {

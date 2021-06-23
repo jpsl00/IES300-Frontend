@@ -52,11 +52,19 @@
           mobile-mode="minimalist"
           :has-navigation="false"
         >
-          <b-step-item step="0" label="Criar Agendamento" />
-          <b-step-item step="1" label="Análise do Profissional" />
-          <b-step-item step="2" label="Marcação de Consultas" />
-          <b-step-item step="3" label="Consultas" />
-          <b-step-item step="4" label="Concluído" />
+          <b-step-item step="0" label="Criar Agendamento" :clickable="false" />
+          <b-step-item
+            step="1"
+            label="Análise do Profissional"
+            :clickable="false"
+          />
+          <b-step-item
+            step="2"
+            label="Marcação de Consultas"
+            :clickable="false"
+          />
+          <b-step-item step="3" label="Consultas" :clickable="false" />
+          <b-step-item step="4" label="Concluído" :clickable="false" />
         </b-steps>
       </div>
       <div class="column is-12">
@@ -215,7 +223,7 @@ export default class AppointmentComponent extends Vue {
         isAllowEditing: false,
         isFull: true,
         modalConfig: {
-          title: 'Visualizar Agendamento',
+          title: 'Visualizar Ficha',
           button: {
             text: 'OK',
             type: 'is-info',

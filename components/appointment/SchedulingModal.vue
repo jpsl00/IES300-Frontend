@@ -51,6 +51,7 @@
                   <b-timepicker
                     ref="datepicker"
                     v-model="createdSchedules[index].date"
+                    hour-format="24"
                     expanded
                     placeholder="Selecione a hora da consulta"
                     :default-minutes="0"

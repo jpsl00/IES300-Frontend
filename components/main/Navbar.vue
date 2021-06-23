@@ -16,7 +16,7 @@
       >
         Home
       </b-navbar-item>
-      <b-navbar-item href="#"> Cursos </b-navbar-item>
+      <b-navbar-item href="#" disabled> Cursos </b-navbar-item>
       <b-navbar-dropdown label="Serviços" hoverable boxed collapsible>
         <b-navbar-item
           tag="router-link"
@@ -25,7 +25,7 @@
           Agendamento
         </b-navbar-item>
       </b-navbar-dropdown>
-      <b-navbar-item href="#"> Contato </b-navbar-item>
+      <b-navbar-item href="#" disabled> Contato </b-navbar-item>
     </template>
     <template v-if="!isLoggedIn" slot="end">
       <b-navbar-item tag="div">
@@ -41,11 +41,26 @@
       </b-navbar-item>
     </template>
     <template v-else slot="end">
-      <b-navbar-item class="is-unselectable" tag="div">
+      <!-- <b-navbar-item class="is-unselectable" tag="div">
         Bem-vindo, <strong>{{ user ? user.name : '' }}</strong>
-      </b-navbar-item>
-      <b-navbar-item tag="div">
-        <div class="buttons">
+      </b-navbar-item> -->
+      <b-navbar-item tag="div" class="b-tooltips">
+        <!-- <div class="buttons"> -->
+        <b-tooltip label="Editar Dados" position="is-bottom">
+          <b-button
+            type="is-primary"
+            icon-left="user-circle"
+            tag="router-link"
+            to="/perfil"
+            >{{ user ? user.name : '' }}</b-button
+          >
+        </b-tooltip>
+
+        <b-tooltip
+          label="Sair do Sistema"
+          type="is-danger"
+          position="is-bottom"
+        >
           <b-button
             type="is-danger"
             icon-left="sign-out-alt"
@@ -54,7 +69,8 @@
           >
             Sair
           </b-button>
-        </div>
+        </b-tooltip>
+        <!-- </div> -->
       </b-navbar-item>
     </template>
     <!-- <template v-else slot="end">THIS IS AN ELSE</template> -->
@@ -86,8 +102,14 @@ export default class Navbar extends Vue {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 strong {
   padding-left: 5px;
+}
+
+.b-tooltips {
+  .b-tooltip:not(:last-child) {
+    margin-right: 0.5em;
+  }
 }
 </style>

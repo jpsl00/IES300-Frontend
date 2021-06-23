@@ -18,6 +18,7 @@
     "@nuxtjs/fontawesome": "^1.1.2",
     "@nuxtjs/pwa": "^3.0.2",
     "core-js": "^3.6.5",
+    "dayjs": "^1.10.5",
     "fibers": "^5.0.0",
     "node-sass": "^5.0.0",
     "nuxt": "^2.14.6",

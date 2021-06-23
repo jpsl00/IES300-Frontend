@@ -11,7 +11,9 @@
       :type="{ 'is-danger': errors[0], 'is-success': valid }"
       :message="errors"
       :expanded="$attrs['field-expanded']"
+      :grouped="$attrs['field-grouped']"
     >
+      <slot name="pre-addon" />
       <slot name="input">
         <b-input
           v-model="innerValue"

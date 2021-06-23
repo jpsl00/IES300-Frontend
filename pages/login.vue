@@ -110,7 +110,7 @@
 <script lang="ts">
 import { Component, Vue, namespace, Watch } from 'nuxt-property-decorator'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
-import InputWithValidationComponent from '@/components/inputs/InputWithValidation.vue'
+import InputWithValidation from '@/components/inputs/InputWithValidation.vue'
 
 const authentication = namespace('authentication')
 
@@ -118,7 +118,7 @@ const authentication = namespace('authentication')
   components: {
     ValidationObserver,
     ValidationProvider,
-    InputWithValidationComponent,
+    InputWithValidation,
   },
 })
 export default class Login extends Vue {
