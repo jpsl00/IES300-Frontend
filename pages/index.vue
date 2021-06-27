@@ -130,7 +130,7 @@ import HomeCarousel, { ICarouselData } from '~/components/HomeCarousel.vue'
 })
 export default class Home extends Vue {
   async asyncData({ $axios }: { $axios: NuxtAxiosInstance }) {
-    let tratamentos: ICarouselData[] = [
+    const tratamentos: ICarouselData[] = [
       {
         title: 'Avaliação Ayurvédica',
         content:
@@ -213,7 +213,7 @@ export default class Home extends Vue {
         image: 'https://bioveda.com.br/wp-content/uploads/2018/08/Garshana.jpg',
       },
     ]
-    let terapias: ICarouselData[] = [
+    const terapias: ICarouselData[] = [
       {
         title: 'Yoga Massagem Ayurvédica',
         content:

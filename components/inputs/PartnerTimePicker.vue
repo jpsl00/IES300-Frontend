@@ -1,36 +1,44 @@
 <template>
-  <b-field :label="day" grouped>
-    <b-switch
-      v-model="data.toggle"
-      size="is-medium"
-      passive-type="is-danger"
-      type="is-success"
-      class="mr-0"
-      v-bind="$attrs"
-      :disabled="loading"
-      @input="onChange"
-    />
-    <b-timepicker
-      v-model="data.startInternal"
-      placeholder="Início"
-      hour-format="24"
-      :min-time="minTime"
-      :max-time="maxTimeOffset"
-      :increment-minutes="60"
-      :disabled="!data.toggle || loading"
-      expanded
-    />
-    <b-timepicker
-      v-model="data.endInternal"
-      placeholder="Fim"
-      hour-format="24"
-      :min-time="minTimeOffset"
-      :max-time="maxTime"
-      :increment-minutes="60"
-      :disabled="!data.toggle || loading"
-      expanded
-    />
-  </b-field>
+  <ValidationObserver ref="observer" v-slot="{ handleSubmit, invalid }">
+    <b-field :label="day" grouped>
+      <b-switch
+        v-model="data.toggle"
+        size="is-medium"
+        passive-type="is-danger"
+        type="is-success"
+        class="mr-0"
+        v-bind="$attrs"
+        :disabled="loading"
+        @input="onChange"
+      />
+      <b-timepicker
+        v-model="data.startInternal"
+        placeholder="Início"
+        hour-format="24"
+        :min-time="minTime"
+        :max-time="maxTimeOffset"
+        :increment-minutes="60"
+        :default-seconds="0"
+        :default-minutes="0"
+        :disabled="!data.toggle || loading"
+        :mobile-native="false"
+        expanded
+      />
+      <b-timepicker
+        v-model="data.endInternal"
+        placeholder="Fim"
+        hour-format="24"
+        :min-time="minTimeOffset"
+        :max-time="maxTime"
+        :increment-minutes="60"
+        :default-seconds="0"
+        :default-minutes="0"
+        :disabled="!data.toggle || loading"
+        :mobile-native="false"
+        expanded
+      />
+    </b-field>
+  </ValidationObserver>
 </template>
 
 <script lang="ts">
@@ -42,12 +50,16 @@ import {
   Vue,
   Watch,
 } from 'nuxt-property-decorator'
-import { ValidationProvider } from 'vee-validate'
+import { ValidationObserver, ValidationProvider } from 'vee-validate'
+import InputWithValidation from '@/components/inputs/InputWithValidation.vue'
+
 import dayjs from 'dayjs'
 
 @Component({
   components: {
+    ValidationObserver,
     ValidationProvider,
+    InputWithValidation,
   },
 })
 export default class PartnerTimePicker extends Vue {
@@ -103,11 +115,13 @@ export default class PartnerTimePicker extends Vue {
   @Watch('data.startInternal')
   onStartChange() {
     this.data.start = dayjs(this.data.startInternal!).hour()
+    if (!this.data.endInternal) this.data.endInternal = this.maxTime
   }
 
   @Watch('data.endInternal')
   onEndChange() {
     this.data.end = dayjs(this.data.endInternal!).hour()
+    if (!this.data.startInternal) this.data.startInternal = this.minTime
   }
 
   get minTime() {
@@ -119,16 +133,16 @@ export default class PartnerTimePicker extends Vue {
   }
 
   get minTimeOffset() {
-    return new Date((this.data.startInternal?.getTime() || 0) + 1000 * 60 * 60)
+    return this.toTime((this.data.start || 1) + 1)
   }
 
   get maxTimeOffset() {
-    return new Date((this.data.endInternal?.getTime() || 0) - 1000 * 60 * 60)
+    return this.toTime((this.data.end || 23) - 1)
   }
 
   toTime(nbr: number) {
     const dt = new Date()
-    dt.setHours(nbr, 0)
+    dt.setHours(nbr, 0, 0)
     return dt
   }
 

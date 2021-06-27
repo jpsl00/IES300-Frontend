@@ -64,7 +64,7 @@ export default class Authorization extends VuexModule {
           email: data.email,
           telephone: data.telephone,
           address: data.address,
-          workHours: JSON.stringify(data.workHours),
+          workHours: data.workHours,
         })
       )
 
