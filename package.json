@@ -20,7 +20,7 @@
     "core-js": "^3.6.5",
     "dayjs": "^1.10.5",
     "fibers": "^5.0.0",
-    "node-sass": "^5.0.0",
+    "node-sass": "^7.0.1",
     "nuxt": "^2.14.6",
     "nuxt-buefy": "^0.4.3",
     "nuxt-compress": "^4.1.0",
