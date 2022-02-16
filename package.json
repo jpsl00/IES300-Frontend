@@ -25,7 +25,7 @@
     "nuxt-buefy": "^0.4.3",
     "nuxt-compress": "^4.1.0",
     "nuxt-property-decorator": "^2.8.8",
-    "sass-loader": "^10.0.5",
+    "sass-loader": "^12.6.0",
     "vee-validate": "^3.4.4",
     "vuex-persist": "^3.1.3"
   },
